@@ -1,0 +1,9 @@
+﻿Ciclo diario completado con éxito. Resumen:
+
+- **Paso 0**: sesiones ya estaban activas (a diferencia de la corrida anterior que había fallado por deslogueo). Cambié la cuenta activa de Gemini de Capilux a Lautaro Forestale.
+- **Paso 1 (Gemini Deep Research)**: ~9 minutos, informe de recolección extraído limpio (47.936 caracteres).
+- **Pasos 2-4 (Qwen)**: Fase 1A → 1B (verificación cruzada: Tier 1=2, Tier 2=27, Tier 3=7, cero sin estado) → 1C (informe final, 45.664 caracteres).
+- **Paso 5 (DeepSeek HTML)**: 2 cortes de "Continuar"; al copiar aparecieron 2 bloques de código en pantalla, pero el primero resultó ser un resto truncado de la edición del 17/8 que seguía en el scroll del chat fijo persistente (lo descarté). El segundo bloque era el HTML completo de hoy, autocontenido (80.092 caracteres).
+- **Paso 6**: publiqué `ediciones/2026-08-18.html` y actualicé `index.html`. Commits `21b2bf9` y `e0e0dfc` pusheados a `origin/main`.
+- **Housekeeping**: encontré residuos sueltos sin trackear de una corrida anterior interrumpida (`timing_18ago.txt`, `timing_final.txt`, `run_18ago_output.log`, `browser-profile/`). Los borré, y agregué `browser-profile/` al `.gitignore` porque contiene cookies de sesión reales de Gemini/Qwen/DeepSeek — no debía quedar expuesto en el repo público.
+- **Log**: entrada `[2026-08-18 00:47] OK` agregada a `run_log.txt`.
