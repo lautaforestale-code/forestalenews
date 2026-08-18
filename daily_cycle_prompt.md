@@ -45,6 +45,16 @@ link de la barra lateral). Si aparece otra cuenta (ej. Capilux), hacé clic en e
 link de cuenta, esperá el selector de cuentas de Google, y elegí el link
 "Lautaro Forestale lautaforestale@gmail.com".
 
+IMPORTANTE — chequeo de sesión sin falsos negativos: justo después de navegar a un
+chat (Qwen, DeepSeek, o el propio Gemini), la página puede mostrar por un instante
+un estado transitorio de "sin cuenta" / placeholders de carga mientras termina de
+validar la sesión guardada — eso NO es un logout real. Antes de concluir que una
+sesión está deslogueada: esperá con browser_wait_for (~3-5s), sacá un snapshot o
+screenshot recién ahí, y si todavía se ve deslogueada hacé un reload y esperá otros
+3-5s más antes de mirar de nuevo. Recién si DESPUÉS de esa espera sigue mostrando
+botones de "Iniciar sesión"/"Crear cuenta" en vez de la cuenta guardada, es un
+logout real y corresponde registrar el ERROR y terminar (ver PASO 8) — no antes.
+
 ═══════════════════════════════════════════════════════════════
 PASO 1 — GEMINI (Fase 1A externa / colección)
 ═══════════════════════════════════════════════════════════════
