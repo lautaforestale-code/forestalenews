@@ -8,11 +8,23 @@ proceso colgado esperando una respuesta que nunca va a llegar.
 Fecha de hoy: usá la fecha real del sistema en el momento de la ejecución, formato
 "DD de MMMM de AAAA" para los prompts, y "AAAA-MM-DD" para nombres de archivo.
 
+Edición del día (dos corridas diarias): este ciclo corre dos veces por día, mañana
+y noche. Determiná cuál corresponde según la hora real del sistema al arrancar:
+- Antes de las 15:00 → edición "AM".
+- Desde las 15:00 en adelante → edición "PM".
+El archivo de esta corrida es "[AAAA-MM-DD]-[AM|PM].html" (ver PASO 6). ANTES de
+arrancar el PASO 1, fijate si ese archivo puntual (ediciones/[AAAA-MM-DD]-[AM|PM].html)
+ya existe y está commiteado. Si ya existe, no hay nada que hacer: registralo en el
+log (PASO 8) como SKIP y terminá sin tocar Gemini/Qwen/DeepSeek. Que exista la
+edición AM del día no es motivo para saltear la PM (son archivos distintos), y
+viceversa — el chequeo de "ya existe" es siempre contra el archivo AM o PM
+específico de esta corrida, nunca contra el otro.
+
 Archivos de referencia:
-- Prompt maestro completo: C:\Users\lauta\Downloads\FORESTALE_NEWS_PROMPT_INTEGRADO_v9.txt
-- Prompt para adjuntar a Gemini: C:\Users\lauta\Downloads\FORESTALE_NEWS_GEMINI_PROMPT_v4.txt
-- Repo del sitio: C:\Users\lauta\ForestaleNewsSite
-- Log de corridas: C:\Users\lauta\ForestaleNewsSite\run_log.txt
+- Prompt maestro completo: C:\Users\Super PC\Downloads\FORESTALE_NEWS_PROMPT_INTEGRADO_v9.txt
+- Prompt para adjuntar a Gemini: C:\Users\Super PC\Downloads\FORESTALE_NEWS_GEMINI_PROMPT_v4.txt
+- Repo del sitio: C:\ForestaleNewsSite
+- Log de corridas: C:\ForestaleNewsSite\run_log.txt
 
 Herramientas: usá los tools `mcp__playwright__*` (MCP "playwright" ya configurado
 globalmente). Si no aparecen en tu lista de tools, buscalos con ToolSearch
@@ -43,7 +55,7 @@ PASO 1 — GEMINI (Fase 1A externa / colección)
 4. Click en el botón role=button name="Cargar archivo" (o "Archivos").
 5. Cuando aparezca el file chooser (Modal state), usá
    mcp__playwright__browser_file_upload con path:
-   C:\Users\lauta\Downloads\FORESTALE_NEWS_GEMINI_PROMPT_v4.txt
+   C:\Users\Super PC\Downloads\FORESTALE_NEWS_GEMINI_PROMPT_v4.txt
 6. Escribí en el textbox "Ingresa una instrucción para Gemini" exactamente:
    ejecutá este prompt con el informe del día [FECHA DE HOY]
    y enviá (submit: true).
@@ -142,14 +154,20 @@ PASO 5 — DEEPSEEK (HTML)
 PASO 6 — PUBLICAR
 ═══════════════════════════════════════════════════════════════
 1. Guardá el HTML final decodificado en:
-   C:\Users\lauta\ForestaleNewsSite\ediciones\[AAAA-MM-DD].html
-2. Regenerá C:\Users\lauta\ForestaleNewsSite\index.html:
-   - meta refresh y el link "entrar ahora" deben apuntar a la edición de HOY.
+   C:\ForestaleNewsSite\ediciones\[AAAA-MM-DD]-[AM|PM].html
+2. Regenerá C:\ForestaleNewsSite\index.html:
+   - meta refresh y el link "entrar ahora" deben apuntar a la edición que ACABÁS
+     de publicar en esta corrida (la más reciente en el tiempo: la PM de un día
+     es más nueva que la AM del mismo día, y ambas son más nuevas que cualquier
+     edición de un día anterior).
    - la lista de "Archivo" debe tener un <li> por cada archivo en ediciones/,
-     ordenados del más nuevo al más viejo, con fecha en español legible.
-3. Corré, en C:\Users\lauta\ForestaleNewsSite:
+     ordenados del más nuevo al más viejo (por fecha, y dentro del mismo día PM
+     antes que AM), con fecha en español legible más "Edición mañana" o
+     "Edición noche" según corresponda (ej. "18 de agosto de 2026 — Edición
+     noche").
+3. Corré, en C:\ForestaleNewsSite:
    git add -A
-   git commit -m "Edición del [AAAA-MM-DD]"
+   git commit -m "Edición [AM|PM] del [AAAA-MM-DD]"
    git push
    (el remoto y la rama ya deberían estar configurados de una corrida anterior;
    si `git push` falla porque no hay remoto configurado, registralo en el log —
@@ -159,14 +177,14 @@ PASO 6 — PUBLICAR
 PASO 7 — CONFIRMACIÓN FINAL
 ═══════════════════════════════════════════════════════════════
 Verificá que el push haya funcionado (git push sin error) y que
-ediciones/[AAAA-MM-DD].html exista con contenido razonable (>10.000 caracteres,
-empieza con <!DOCTYPE html>, termina con </html>).
+ediciones/[AAAA-MM-DD]-[AM|PM].html exista con contenido razonable (>10.000
+caracteres, empieza con <!DOCTYPE html>, termina con </html>).
 
 ═══════════════════════════════════════════════════════════════
 PASO 8 — LOG (siempre, pase lo que pase)
 ═══════════════════════════════════════════════════════════════
 Al terminar (con éxito o con error), agregá una línea a
-C:\Users\lauta\ForestaleNewsSite\run_log.txt con formato:
+C:\ForestaleNewsSite\run_log.txt con formato:
 [AAAA-MM-DD HH:MM] OK — edición publicada
 o
 [AAAA-MM-DD HH:MM] ERROR en Paso [N] — [descripción breve y concreta del problema]
