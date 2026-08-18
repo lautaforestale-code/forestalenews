@@ -4,7 +4,7 @@
 $ErrorActionPreference = "Continue"
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
-$root = "C:\Users\lauta\ForestaleNewsSite"
+$root = "C:\ForestaleNewsSite"
 $promptPath = Join-Path $root "daily_cycle_prompt.md"
 $logPath = Join-Path $root ("last_run_" + (Get-Date -Format "yyyy-MM-dd_HHmm") + ".log")
 
