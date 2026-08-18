@@ -69,6 +69,16 @@ PASO 1 — GEMINI (Fase 1A externa / colección)
 6. Escribí en el textbox "Ingresa una instrucción para Gemini" exactamente:
    ejecutá este prompt con el informe del día [FECHA DE HOY]
    y enviá (submit: true).
+6.5. IMPORTANTE — Gemini Deep Research no arranca solo: después de enviar el
+   mensaje, primero te muestra un PLAN de investigación propuesto (una lista de
+   pasos/temas a investigar) y se detiene ahí esperando confirmación. Tenés que
+   buscar y clickear el botón que arranca la investigación de verdad (suele decir
+   algo como "Empezar investigación" / "Start research" / "Iniciar investigación",
+   normalmente al final del plan propuesto). Si después de enviar el mensaje ves
+   ese plan pero el botón "Detener respuesta"/"stop" no aparece (señal de que no
+   está corriendo nada activamente), es casi seguro que falta este click — buscalo
+   con un snapshot antes de asumir que ya arrancó. No sigas al paso 7 sin haber
+   confirmado que la investigación está corriendo de verdad.
 7. Esperá a que termine. Deep Research tarda varios minutos (10-15 típico).
    Poleá cada 60-90s con browser_wait_for + un chequeo liviano (browser_evaluate
    buscando si el botón "Detener respuesta" / "stop" sigue presente) en vez de
