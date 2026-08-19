@@ -115,10 +115,16 @@ PASO 2 — QWEN, FASE 1A (en paralelo con el Paso 1, o después, tu criterio)
    historial). Si esa URL ya no existe o tira error, DETENÉTE y registralo en el
    log — no crees un chat nuevo por tu cuenta.
 2. Escribí en el textarea (selector: textarea.message-input-textarea) exactamente:
-   ejecutá fase 1a del [FECHA DE HOY]
+   ejecutá fase 1a del [FECHA DE HOY], edición [mañana|noche] (esta es la corrida
+   [AM|PM] del día, no un día distinto — si ya se corrió la del [mañana|noche] hoy,
+   esta es la otra, es normal repetir la fecha en el mismo día)
    y enviá (submit: true).
 3. Esperá a que termine (podés chequear con browser_evaluate buscando si el botón
-   "Stop" sigue presente vs. volvió a "Send").
+   "Stop" sigue presente vs. volvió a "Send"). Si Qwen responde dudando de la fecha
+   o creyendo que ya pasó ese día (puede pasar porque su propio reloj interno esté
+   desalineado), respondé aclarando explícitamente: "sí, es correcto, hoy corre dos
+   veces (mañana y noche), esta es la edición [AM|PM] del mismo [FECHA DE HOY]" y
+   seguí adelante — no es un error real, ya pasó antes (corrida PM del 18/8/2026).
 
 ═══════════════════════════════════════════════════════════════
 PASO 3 — QWEN, FASE 1B
