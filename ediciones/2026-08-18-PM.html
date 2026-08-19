@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>ForestaleNews · 18 de agosto de 2026 · Edición Noche</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --ink: #111111;
+            --paper: #F5F0E8;
+            --cream: #EDE8DC;
+            --red: #C0392B;
+            --blue: #1A3A5C;
+            --grey: #7a7268;
+            --lgrey: #CCCBC5;
+            --gold: #8B6914;
+            --green: #1A5C2A;
+            --orange: #D35400;
+            --card-white: #ffffff;
+            --border-light: #e0dcd3;
+        }
+        body {
+            background-color: var(--cream);
+            font-family: 'Atkinson Hyperlegible', sans-serif;
+            font-size: 18px;
+            line-height: 1.7;
+            color: var(--ink);
+            padding: 20px;
+        }
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .masthead {
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--blue);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .masthead h1 {
+            font-family: 'Merriweather', serif;
+            font-weight: 900;
+            font-size: 2.5rem;
+            letter-spacing: -0.5px;
+            color: var(--blue);
+        }
+        .masthead .edition {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--grey);
+            font-size: 1rem;
+            border-left: 1px solid var(--lgrey);
+            padding-left: 20px;
+        }
+        .urgent-banner {
+            background-color: var(--red);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        .pulse-dot {
+            width: 14px;
+            height: 14px;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            animation: pulse 1.8s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 12px rgba(255, 255, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 28px;
+        }
+        .card {
+            background: var(--card-white);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 28px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-light);
+        }
+        .section-label {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--grey);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 5px;
+            margin-bottom: 18px;
+        }
+        h2 {
+            font-family: 'Merriweather', serif;
+            font-weight: 700;
+            font-size: 2rem;
+            margin: 0 0 12px 0;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+        h3 {
+            font-family: 'Merriweather', serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin: 20px 0 10px;
+            color: #1e2f3d;
+        }
+        h4 {
+            font-family: 'Merriweather', serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin: 18px 0 6px;
+            color: var(--blue);
+        }
+        .portada-titular {
+            font-size: 2.2rem;
+            font-weight: 900;
+            font-family: 'Merriweather', serif;
+            line-height: 1.3;
+            margin-bottom: 16px;
+            color: #0d1b2a;
+        }
+        .deck {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin: 15px 0 20px;
+            border-left: 5px solid var(--blue);
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .dato-ancla-box {
+            background: var(--blue);
+            color: white;
+            padding: 18px 22px;
+            border-radius: 10px;
+            margin: 20px 0 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .dato-ancla-box .label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+        .dato-ancla-box .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 5px 0 0;
+        }
+        .fe-errata {
+            font-size: 0.9rem;
+            background: #fef3e9;
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 10px;
+            color: var(--orange);
+        }
+        .verification-tag {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-right: 6px;
+            background: #f0f0f0;
+            color: #333;
+        }
+        .tag-confianza-alta {
+            background: #1A5C2A;
+            color: white;
+        }
+        .tag-confianza-media {
+            background: #D35400;
+            color: white;
+        }
+        .tag-confianza-baja {
+            background: #8B6914;
+            color: white;
+        }
+        .badge-tier {
+            font-family: 'JetBrains Mono', monospace;
+            background: #e9e9e9;
+            border-radius: 4px;
+            padding: 1px 6px;
+            margin-left: 5px;
+        }
+        .contexto-box {
+            background: #fcf8f0;
+            border-left: 4px solid var(--gold);
+            padding: 16px 20px;
+            margin: 18px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 0.95rem;
+        }
+        .tablero-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .indicador {
+            background: var(--paper);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--lgrey);
+        }
+        .indicador .nombre {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--grey);
+        }
+        .indicador .valor {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        .sidebar .card {
+            padding: 18px;
+        }
+        .riesgo-nivel {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed var(--lgrey);
+            padding: 8px 0;
+        }
+        .riesgo-max {
+            color: var(--red);
+            font-weight: 700;
+        }
+        .riesgo-crit {
+            color: #b64926;
+            font-weight: 600;
+        }
+        .agenda-item {
+            margin-bottom: 12px;
+            border-left: 3px solid var(--blue);
+            padding-left: 12px;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--grey);
+            border-top: 1px solid var(--lgrey);
+            padding-top: 20px;
+        }
+        .fuente-mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--grey);
+        }
+        .cita {
+            font-style: italic;
+            border-left: 3px solid var(--lgrey);
+            padding-left: 18px;
+            margin: 16px 0;
+        }
+        .separator-dot {
+            margin: 0 6px;
+            color: var(--lgrey);
+        }
+        .chart-container {
+            margin: 20px 0 10px;
+            height: 150px;
+        }
+        .autocritica-box {
+            background: #fdf8f3;
+            border: 1px dashed #c9a96e;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 0.9rem;
+            color: #5c4a2e;
+        }
+        .mapa-poder {
+            background: #f6f3ec;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        .nota-sistema {
+            font-size: 0.85rem;
+            background: #f0f4f8;
+            border-left: 3px solid var(--blue);
+            padding: 10px 14px;
+            margin-top: 12px;
+            color: #2c3e50;
+        }
+        .advertencia-metodologica {
+            font-size: 0.85rem;
+            background: #fef9f0;
+            border-left: 3px solid var(--orange);
+            padding: 10px 14px;
+            margin-top: 12px;
+            color: #5c3a0e;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        th, td {
+            border: 1px solid var(--lgrey);
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background: var(--paper);
+            font-weight: 700;
+        }
+        .metareporte-box {
+            background: #f7f9fb;
+            border: 1px solid var(--lgrey);
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 12px;
+        }
+        .chequeo-item {
+            margin-bottom: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background: #fafaf8;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0.2in;
+            }
+            .dashboard {
+                max-width: 100%;
+            }
+            .sidebar,
+            .urgent-banner {
+                break-inside: avoid;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+        @media (max-width: 1100px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .tablero-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+
+        <!-- MASTHEAD -->
+        <div class="masthead">
+            <h1>FORESTALE NEWS</h1>
+            <div class="edition">Buenos Aires · Martes 18 de agosto de 2026 · Edición Noche</div>
+        </div>
+
+        <!-- BANNER URGENCIA -->
+        <div class="urgent-banner">
+            <span class="pulse-dot"></span>
+            <span><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> ALERTA MÁXIMA · Cerimedo detenido en Bolivia por tentativa de femicidio · Pollicita intima a Adorni por USD 500.000 ocultos · Senado rechaza pliegos a la Corte · Riesgo país supera 500 pb · 30.000 empresas cerradas</span>
+        </div>
+
+        <!-- MAIN GRID -->
+        <div class="main-grid">
+
+            <!-- COLUMNA PRINCIPAL -->
+            <div class="content-col">
+
+                <!-- AUTOCRÍTICA -->
+                <div class="card">
+                    <div class="autocritica-box">
+                        <strong><i class="fas fa-pen-fancy"></i> AUTOCRÍTICA DEL CICLO ANTERIOR (EDICIÓN AM):</strong> En la edición AM de hoy cometí dos errores concretos: presenté el Consejo del Salario Mínimo como evento activo del día cuando ya estaba postergado al 22 de agosto (iProfesional lo había publicado antes del mediodía), un fallo de verificación de vigencia que debí detectar buscando "Consejo del Salario postergado" antes de incluirlo; y sobrejerarquicé la apertura del Cristo Redentor como MEDIA con desarrollo extenso cuando su dimensión operativa real (1.500 camiones iniciando cruce) era un hecho cerrado, mientras subrepresenté la reunión efectiva Karina Milei + García Cuerva que sí tenía desarrollo político concreto. En criterio editorial, no conecté la declaración de Randazzo eximiendo a CFK con el silencio total de Cristina Kirchner ante ese testimonio favorable, una conexión que el lector necesita para entender la estrategia defensiva del peronismo en el juicio.
+                    </div>
+                    <div class="fe-errata"><i class="far fa-check-circle"></i> FE DE ERRATAS: Sin correcciones pendientes.</div>
+                </div>
+
+                <!-- PORTADA -->
+                <div class="card">
+                    <div class="portada-titular">El aparato se quema por dentro: el mismo día que detienen al estratega digital de Milei en Bolivia y el fiscal Pollicita le exige cuentas a Adorni, el Senado le rechaza los pliegos a la Corte y le mutila la ley de propiedad</div>
+                    <div class="deck">El 18 de agosto de 2026 cierra con el oficialismo golpeado simultáneamente en cuatro frentes: Fernando Cerimedo, fundador de La Derecha Diario y estratega digital de Milei, Bolsonaro y Paz, detenido en Bolivia por tentativa de femicidio; Manuel Adorni intimado por Pollicita a justificar USD 500.000 ocultos; el Senado rechazando por amplia mayoría los pliegos de Lijo y García-Mansilla; y la Ley de Inviolabilidad de la Propiedad Privada aprobada solo tras mutilar los capítulos de Tierras y Manejo del Fuego. Mientras el riesgo país supera los 500 puntos, el IPC rebota al 2,1%, 30.000 empresas cerraron desde la asunción de Milei, y la CONADU anuncia huelga de 48 horas para el 27 y 28 de agosto, el oficialismo negocia subsidios de Zonas Cálidas con gobernadores del norte para destrabar las PASO.</div>
+                </div>
+
+                <!-- INVENTARIO JERARQUIZADO -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-list"></i> INVENTARIO JERARQUIZADO</span>
+                    <table>
+                        <thead>
+                            <tr><th>Hecho</th><th>Nivel</th><th>Razón de asignación</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Cerimedo detenido Bolivia + Adorni dictamen 207 fojas</td><td>MÁXIMA</td><td>Dos hechos del mismo día que golpean el aparato comunicacional/judicial del oficialismo. Cerimedo es fundador de La Derecha Diario y asesor de Milei/Bolsonaro/Paz; Adorni es ex jefe de Gabinete. Consecuencias directas sobre la estructura libertaria en 72hs.</td></tr>
+                            <tr><td>Senado rechaza pliegos Lijo/García-Mansilla + mutilación Ley Inviolabilidad + Pacto Zonas Cálidas</td><td>MÁXIMA</td><td>Tres derrotas/cedencias parlamentarias simultáneas del oficialismo el mismo día. Expone el techo de la minoría libertaria y la necesidad de pragmatismo transaccional. Consecuencias directas sobre agenda legislativa en 72hs.</td></tr>
+                            <tr><td>Acuerdo LLA-PRO-PJ Legislatura CABA (Angelici/Olmos/Wasserman/Ramírez)</td><td>ALTA</td><td>Integración del bloque libertario al ecosistema de la política tradicional porteña. Sesión 3/9. Consecuencias sobre armado electoral 2027.</td></tr>
+                            <tr><td>PAMI acefalía (Leguizamo/Zamparolo) + Resolución 1066/2026</td><td>ALTA</td><td>Renuncia simultánea del director y subdirector del PAMI con deuda $500.000M. Cobro a extranjeros en hospitales nacionales. Consecuencias sobre sistema de salud en 7 días.</td></tr>
+                            <tr><td>IPC 2,1% + 30.000 empresas cerraron + ADIMRA 4,4% + CONADU huelga 27-28/8</td><td>ALTA</td><td>Colapso de la economía real documentado con datos verificables. Cuatro indicadores que convergen en la misma semana.</td></tr>
+                            <tr><td>Villarruel NO invitada San Martín + Alberto Fernández revisión psiquiátrica</td><td>ALTA</td><td>Nueva fractura visible del oficialismo y contraofensiva discursiva del ex presidente.</td></tr>
+                            <tr><td>Randazzo Cuadernos + Macri designa Ritondo/De Andreis + Lacunza 2027</td><td>ALTA</td><td>Movimientos simultáneos del peronismo y el PRO en el frente judicial y electoral.</td></tr>
+                            <tr><td>Karina Milei + García Cuerva (Papa León XIV)</td><td>MEDIA</td><td>Primera reunión efectiva de coordinación. Hecho cerrado con desarrollo político.</td></tr>
+                            <tr><td>BCRA Bausili/Werning + flexibiliza créditos + riesgo país >500</td><td>MEDIA</td><td>Movimientos del BCRA y reacción de mercados.</td></tr>
+                            <tr><td>Santiago Caputo posteo anónimo + Feinmann motivo encierro</td><td>MEDIA</td><td>Interna digital libertaria y filtración periodística sobre el aislamiento presidencial.</td></tr>
+                            <tr><td>Metrogas Edenor + Tecnópolis La Nación/Live Nation + Santilli YPF</td><td>MEDIA</td><td>Transferencias de patrimonio público ya reportadas en AM. Contexto estructural.</td></tr>
+                            <tr><td>Dolores Curia red antiderechos + Consejo Salario 22/8 + Cristo Redentor + Mabel 62 años</td><td>REGISTRO</td><td>Hechos menores o ya desarrollados.</td></tr>
+                            <tr><td>Noboa Ecuador llega 20/8 + Agustín Coto + Decretos 747/739</td><td>REGISTRO</td><td>Hechos de contexto.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- BLOQUE DE CONEXIONES EXPLÍCITAS -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-link"></i> BLOQUE DE CONEXIONES EXPLÍCITAS</span>
+                    <table>
+                        <thead>
+                            <tr><th>Sección A</th><th>Sección B</th><th>Hilo de conexión</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Cerimedo detenido + Adorni dictamen</td><td>Senado rechaza pliegos + Ley mutilada</td><td>El mismo día que el aparato comunicacional/judicial del oficialismo colapsa por dentro, el Senado le muestra su techo parlamentario: la narrativa anticasta se desmorona simultáneamente en la justicia y en el Congreso.</td></tr>
+                            <tr><td>Pacto Zonas Cálidas + Acuerdo CABA</td><td>PAMI acefalía + Resolución 1066</td><td>El gobierno negocia subsidios con gobernadores mientras desfinancia el PAMI y cobra a extranjeros: la lógica de "vaciamiento hacia adentro, entrega hacia afuera" se aplica simultáneamente en salud y energía.</td></tr>
+                            <tr><td>IPC 2,1% + 30.000 empresas + ADIMRA</td><td>CONADU huelga 27-28</td><td>El colapso de la economía real documentado se traduce directamente en conflictividad social: la huelga universitaria no es un hecho aislado sino la consecuencia del ajuste.</td></tr>
+                            <tr><td>Randazzo exime CFK</td><td>Villarruel NO invitada + Alberto Fernández</td><td>Mientras el peronismo articula su estrategia defensiva en el juicio por Cuadernos, el oficialismo se fractura visiblemente y el ex presidente contraataca con el pedido de revisión psiquiátrica.</td></tr>
+                            <tr><td>Metrogas/Tecnópolis/Santilli YPF</td><td>Acuerdo CABA Angelici/Wasserman</td><td>Las transferencias de patrimonio público al capital concentrado y la integración del bloque libertario al ecosistema político tradicional son dos caras de la misma estrategia: consolidar poder económico y político simultáneamente.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- SECCIÓN 1 — MÁXIMA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-fire"></i> SECCIÓN 1 · MÁXIMA</span>
+                    <h2>El aparato se quema por dentro: Cerimedo detenido en Bolivia y Adorni intimado por Pollicita</h2>
+                    <p>El 18 de agosto de 2026 amaneció con la detención de Fernando Cerimedo en el aeropuerto internacional de Viru Viru, Santa Cruz de la Sierra, cuando intentaba abordar un vuelo hacia Buenos Aires. Cerimedo es fundador de La Derecha Diario, CEO de Numen Publicidad, y uno de los asesores políticos más cercanos a Javier Milei, Jair Bolsonaro y el presidente boliviano Rodrigo Paz. La Fiscalía boliviana lo imputó como presunto autor intelectual del delito de tentativa de femicidio contra su ex pareja, Nadia Beller, abogada y activista política que fue excandidata a diputada por el MAS en 2019 y actualmente opera en la gestión de Paz. Beller fue emboscada la noche anterior en la puerta de un hotel en la zona de Canal Isuto por dos sicarios disfrazados de repartidores de delivery que le asestaron tres disparos en el pecho. Sobrevivió y permanece hospitalizada en estado crítico. Cerimedo permanecerá detenido en Bolivia por riesgo de fuga.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: Chequeado, El País, Clarín, Página 12, TeleSur, La Diaria, Infobae, Radio La Red, La Jornada, Resumen Latinoamericano <span class="badge-tier">[■■□]</span></p>
+                    <p>La detención de Cerimedo no es un hecho policial aislado: es un golpe directo a la estructura comunicacional de la ultraderecha sudamericana. Cerimedo fue director creativo de la campaña presidencial de Milei, asesor de Bolsonaro, y actualmente asesor de Rodrigo Paz en Bolivia. La Derecha Diario es uno de los principales medios digitales del ecosistema libertario. Su detención por tentativa de femicidio contra una activista política que opera en el mismo gobierno que él asesora expone las contradicciones internas del espacio y abre una crisis de credibilidad para la narrativa oficial.</p>
+                    <p>Simultáneamente, el fiscal federal Gerardo Pollicita presentó ante el juzgado de Ariel Lijo un dictamen de 207 fojas donde exige a Manuel Adorni que justifique 20 puntos concretos de inconsistencias en su evolución patrimonial. Los peritajes contables sobre el grupo familiar, que incluye a su esposa Bettina Angeletti, revelaron erogaciones que no encuentran sustento en sus ingresos lícitos declarados desde su ingreso a la función pública en diciembre de 2023. Adorni deberá explicar gastos y adquisiciones injustificadas por 43.068.549 pesos y 402.578,12 dólares estadounidenses billete, utilizados en viajes, alquileres, refacciones de propiedades y honorarios notariales. Frente a las denuncias de enriquecimiento ilícito impulsadas por legisladoras como Marcela Pagano, Mónica Frade y Maximiliano Ferraro, Adorni intentó una maniobra legal: blanqueó un incremento patrimonial real del 400%, admitiendo ante los medios que mantuvo ocultos cerca de 500.000 dólares durante años para "escaparse del fisco", alegando que provenían de viejas inversiones en Bitcoin. Los denunciantes desestiman que se trate de un "error involuntario", señalando que Adorni quedó al borde de confesar el delito de "omisión maliciosa" (reprimido con hasta dos años de prisión por el artículo 268 inc. 3 del Código Penal) en su afán por esquivar la figura más grave de enriquecimiento ilícito. El fiscal Pollicita otorgó 15 días hábiles para que presente documentación y trazabilidad bancaria; de no ser satisfactoria, el siguiente paso ineludible será la declaración indagatoria.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: Chequeado, Infobae, La Nación, Página 12, TN, Tiempo Judicial <span class="badge-tier">[■■□]</span></p>
+                    <p>La lectura analítica de estos dos hechos en simultáneo sugiere que el aparato comunicacional y judicial del oficialismo está colapsando por dentro el mismo día. Esta es una hipótesis analítica: la detención de Cerimedo y la intimación a Adorni no son hechos aislados sino la manifestación de una crisis estructural del espacio libertario, que construyó su identidad sobre la narrativa anticasta y ahora enfrenta la evidencia de que sus propios operadores están involucrados en hechos de extrema gravedad. La narrativa de integridad moral se desmorona simultáneamente en Bolivia (Cerimedo) y en Argentina (Adorni), y el gobierno no tiene capacidad de respuesta inmediata.</p>
+                    <p><span class="verification-tag">[HIPÓTESIS ANALÍTICA]</span></p>
+                    <h3>ANÁLISIS CRUZADO</h3>
+                    <p>La cobertura mediática de este hecho revela una asimetría estructural entre los grupos editoriales. El Grupo A — Clarín, El País, La Jornada — cubrió la detención de Cerimedo con foco en el hecho policial y la identidad del detenido, enfatizando su rol como "ex asesor de Milei" sin profundizar en las implicancias políticas. El Grupo B — Página 12, Chequeado, TeleSur — cubrió el hecho con foco en la estructura comunicacional de la ultraderecha y las implicancias para el espacio libertario. La diferencia no es de tono sino de selección: el Grupo A eligió mostrar el hecho policial; el Grupo B eligió mostrar la crisis política que el hecho implica.</p>
+                    <p>La omisión más significativa en la cobertura del Grupo A es la conexión entre la detención de Cerimedo y el dictamen contra Adorni: ninguno de los medios hegemónicos vinculó los dos hechos como parte de la misma crisis del aparato oficialista. El Grupo B, por su parte, omitió la dimensión de la violencia de género como eje central del caso Cerimedo, enfocándose en la dimensión política y descuidando la gravedad del ataque contra Nadia Beller.</p>
+                    <p>La lógica de esta cobertura se explica por los intereses verificables de cada grupo. El Grupo A cubre la detención como hecho policial aislado porque vincularlo con el dictamen contra Adorni y la crisis del oficialismo contradice la narrativa de estabilidad institucional que el grupo sostiene. En el caso de Clarín, la omisión es directa: el medio es parte del Grupo La Nación que acaba de recibir la concesión de Tecnópolis por 25 años, y no tiene interés en amplificar una crisis que podría afectar al gobierno que le adjudicó la concesión. El Grupo B cubre la crisis con énfasis porque su audiencia es el sector popular afectado por el ajuste y su línea editorial es crítica del modelo. Esta es una hipótesis analítica: la cobertura asimétrica refleja los intereses materiales de cada grupo editorial más que diferencias informativas genuinas.</p>
+                    <p><span class="verification-tag">[HIPÓTESIS ANALÍTICA]</span></p>
+                </div>
+
+                <!-- SECCIÓN 2 — MÁXIMA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-landmark"></i> SECCIÓN 2 · MÁXIMA</span>
+                    <h2>El Senado le muestra el techo: rechazo a pliegos, ley mutilada y pacto de subsidios</h2>
+                    <p>El 18 de agosto de 2026 cerró con el oficialismo golpeado simultáneamente en tres frentes parlamentarios. El Senado de la Nación rechazó por amplia mayoría los pliegos de Ariel Lijo y Manuel García-Mansilla, postulados por el Ejecutivo para integrar la Corte Suprema de Justicia. El pliego de Lijo cosechó 43 votos negativos contra 26 afirmativos; el de García-Mansilla obtuvo 51 negativos contra 20 afirmativos. La derrota fue implacable. La Casa Rosada emitió un comunicado oficial repudiando duramente la decisión de la Cámara Alta, exponiendo la incapacidad del oficialismo para articular las mayorías calificadas necesarias en el ámbito judicial.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: Palabras del Derecho, Chequeado, Página 12, Radio La Red, Infobae, Ámbito, Cronista, La Nación, Diario Punto Uno, Radio Sudamericana, Argentina Forestal, Parlamentario <span class="badge-tier">[■■□]</span></p>
+                    <p>Simultáneamente, la Ley de Inviolabilidad de la Propiedad Privada (Expediente PE-13/2026) obtuvo media sanción del Senado el 7 de agosto con un ajustado margen de 37 votos afirmativos contra 33 negativos, pero solo después de una mutilación severa de su proyecto original. El dictamen aprobado eliminó íntegramente dos capítulos que concentraban el mayor rechazo popular y legislativo: el Capítulo III, que proponía una reforma a la Ley de Tierras Rurales para facilitar la adquisición y extranjerización de tierras nacionales, y el Capítulo IV, referido a modificaciones desregulatorias en la Ley de Manejo del Fuego. La claudicación de última hora fue confirmada en el recinto por el senador fueguino Agustín Coto (LLA), dejando en pie únicamente las reformas sobre desalojos exprés, regularización dominial y expropiaciones.</p>
+                    <p>En el tercer frente, el 18 de agosto a las 17:30 horas, Luis Caputo y Diego Santilli, acompañados por el secretario coordinador de Energía y Minería Daniel González y la secretaria de Energía María Tettamanti, recibieron en el quinto piso del Palacio de Hacienda a los gobernadores Raúl Jalil (Catamarca), Gustavo Sáenz (Salta), Leandro Zdero (Chaco) y Carlos Sadir (Jujuy), junto con equipos técnicos de las restantes jurisdicciones regionales del Norte Grande. Tras una hora de tensas negociaciones y exposiciones técnicas provinciales, el Gobierno cedió a la presión e instrumentó un drástico aumento en los subsidios eléctricos para las "Zonas Cálidas" durante el período estival (noviembre a abril). Las Zonas Muy Cálidas (Ia y Ib) pasaron de un tope de 300 kW/h a 550 kW/h (+250 kW/h); las Zonas Cálidas (IIb) pasaron de 150 kW/h a 300 kW/h (+150 kW/h). Como resumió una fuente ligada a los gobernadores peronistas: "Va a ser zonas cálidas por zonas frías, una por una".</p>
+                    <p>La lectura analítica de estos tres hechos en simultáneo sugiere que el oficialismo opera con un techo parlamentario extremadamente frágil y se ve forzado a abandonar su intransigencia fundacional en favor de un pragmatismo transaccional. Esta es una hipótesis analítica: la incapacidad de imponer sus pliegos en la Corte Suprema, la obligación de mutilar sus propios proyectos emblemáticos, y el costo fiscal de tener que ceder ante las provincias con subsidios de Zonas Cálidas para lograr acuerdos transitorios, demuestran que el Gobierno no puede sostener su agenda sin concesiones. El plan de "motosierra" se estrella contra la realidad de una minoría parlamentaria que no tiene los votos para imponer nada sin negociar.</p>
+                    <p><span class="verification-tag">[HIPÓTESIS ANALÍTICA]</span></p>
+                    <h3>ANÁLISIS CRUZADO</h3>
+                    <p>La cobertura mediática de este hecho revela una asimetría estructural entre los grupos editoriales. El Grupo A — Infobae, Ámbito, La Nación, Radio La Red — cubrió el rechazo a los pliegos como "derrota del oficialismo" y el pacto de Zonas Cálidas como "acuerdo con gobernadores", enfatizando la negociación sin profundizar en la derrota. El Grupo B — Página 12, El Destape — cubrió los tres hechos como "derrota triple" y "capitulación fiscal", enfatizando la incapacidad del oficialismo para sostener su agenda. La diferencia no es de tono sino de selección: el Grupo A eligió mostrar la negociación; el Grupo B eligió mostrar la derrota.</p>
+                    <p>La omisión más significativa en la cobertura del Grupo A es la conexión entre los tres hechos como manifestación de la misma debilidad estructural: ninguno de los medios hegemónicos vinculó el rechazo a los pliegos, la mutilación de la ley y el pacto de subsidios como tres caras de la misma incapacidad parlamentaria. El Grupo B, por su parte, omitió la dimensión del pragmatismo transaccional como estrategia de supervivencia del oficialismo, enfocándose en la derrota sin reconocer que el gobierno está aprendiendo a negociar para sostenerse.</p>
+                    <p>La lógica de esta cobertura se explica por los intereses verificables de cada grupo. El Grupo A cubre la negociación como estrategia de supervivencia porque sus anunciantes son beneficiarios del modelo económico y tienen interés en mostrar que el gobierno puede sostenerse mediante acuerdos. En el caso de Infobae, la omisión es directa: el medio es propiedad de Daniel Hadad, quien acaba de presentar su cortometraje "El Libertador" con guiños de Cristina Kirchner y Mauricio Macri, coqueteando con un salto a la política. El Grupo B cubre la derrota con énfasis porque su audiencia es el sector popular afectado por el ajuste y su línea editorial es crítica del modelo. Esta es una hipótesis analítica: la cobertura asimétrica refleja los intereses materiales de cada grupo editorial más que diferencias informativas genuinas.</p>
+                    <p><span class="verification-tag">[HIPÓTESIS ANALÍTICA]</span></p>
+                </div>
+
+                <!-- SECCIÓN 3 — ALTA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-city"></i> SECCIÓN 3 · ALTA</span>
+                    <h2>El bloque libertario se integra a la rosca porteña: Angelici, Olmos y Wasserman orquestan el acuerdo CABA</h2>
+                    <p>Pese a la virulencia retórica a nivel nacional, la dinámica legislativa en la Ciudad Autónoma de Buenos Aires expone el rostro más pragmático y tradicional de La Libertad Avanza. El bloque libertario de 14 bancas, comandado por Pilar Ramírez, se ha integrado orgánicamente a un vasto acuerdo político con el PRO oficialista (12 bancas) y el Partido Justicialista (20 bancas) para definir la renovación de las autoridades en los principales organismos de control del distrito. Este pacto, que asegura los 40 votos de mayoría agravada necesarios para la sesión especial convocada por Clara Muzzio para el 3 de septiembre, valida la continuidad de los alfiles judiciales históricos de las facciones mayoritarias, a cambio de concesiones burocráticas directas para el espacio libertario. Las negociaciones fueron orquestadas por Daniel Angelici (operador radical/PRO), Juan Manuel Olmos (PJ) y la propia Ramírez, cuyo esposo, Darío Wasserman, titular del Banco Nación, mantiene estrechos vínculos con Angelici.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: La Nación, Ámbito, Letra P, Enterate Online, Agroempresario, Minuto de Cierre, Buenos Aires Times, Página 12, Perfil <span class="badge-tier">[■■□]</span></p>
+                    <p>La arquitectura del acuerdo se estructura así: Ministerio Público Fiscal (Fiscal General) con candidato de consenso Javier Martín López Zavaleta, padrinazgo PRO (Daniel Angelici), posicionamiento LLA de aceptación táctica; Defensoría del Pueblo de la Ciudad con candidata de consenso María Rosa Muiños, padrinazgo PJ (Juan Manuel Olmos), posicionamiento LLA de convalidación pasiva; Defensorías del Pueblo Adjuntas con candidatas de consenso María Graciela Giorgione y Giselle Furcada, padrinazgo La Libertad Avanza (Pilar Ramírez), posicionamiento LLA de condición innegociable. El comportamiento de LLA en CABA —que previamente avaló expansiones presupuestarias, la Ley Hojarasca local y beneficios impositivos— demuestra una rápida asimilación a los usos y costumbres de la política tradicional, priorizando la consolidación de cajas institucionales propias (las defensorías adjuntas) por encima de cualquier purismo ideológico frente a la "casta" representada por Angelici y Olmos.</p>
+                    <p>La cobertura mediática de este hecho revela una asimetría estructural entre los grupos editoriales. El Grupo A — La Nación, Ámbito — cubrió el acuerdo como "integración de LLA al ecosistema político porteño", enfatizando la rosca sin profundizar en la contradicción ideológica. El Grupo B — Página 12, Letra P — cubrió el acuerdo como "claudicación ideológica" y "asimilación a la casta", enfatizando la contradicción. La diferencia no es de tono sino de selección: el Grupo A eligió mostrar la rosca; el Grupo B eligió mostrar la claudicación.</p>
+                </div>
+
+                <!-- SECCIÓN 4 — ALTA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-pills"></i> SECCIÓN 4 · ALTA</span>
+                    <h2>El PAMI se queda sin conducción y el Gobierno cobra a extranjeros en hospitales nacionales</h2>
+                    <p>El Programa de Atención Médica Integral (PAMI) se encuentra sumido en una acefalía institucional tras las renuncias intempestivas del director nacional Esteban Leguizamo y su número dos Carlos Zamparolo. La salida de Leguizamo, resistida infructuosamente por el ministro de Salud Mario Lugones, expone el rápido deterioro del organismo. En mayo de 2026, Leguizamo había negado públicamente que el PAMI enfrentara un escenario "terminal" o de "colapso"; sin embargo, las cámaras prestadoras, médicos, clínicas, sanatorios y farmacias denuncian actualmente una parálisis en la cadena de pagos, estimando una deuda estatal acumulada que supera los 500.000 millones de pesos. A la insolvencia financiera se suma la presión judicial: el exdirector fue imputado y citado a declarar por la Justicia Federal por los delitos de desobediencia a la autoridad, abuso de autoridad e incumplimiento de deberes de funcionario público, tras negarse a acatar una medida cautelar impulsada por la Asamblea Permanente por los Derechos Humanos (APDH) que ordenaba la restitución de la cobertura automática del 100% de los medicamentos para jubilados a través del programa "Vivir Mejor".</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: Corta, La Noticia Web, Data Diario, El Diario AR, Prensa Obrera, Con La Gente Ros, Ninolegal, Radio Nacional, RTS Medios, La Pluma <span class="badge-tier">[■■□]</span></p>
+                    <p>En paralelo, el Ministerio de Salud avanza con normativas que alteran radicalmente la configuración sanitaria. Mediante la Resolución 1066/2026, firmada por Lugones y publicada en el Boletín Oficial, el Gobierno reglamentó el cobro de la atención médica habitual y programada a personas extranjeras no residentes o con residencias precarias en todos los hospitales de administración nacional. La medida exige a los extranjeros la acreditación de un seguro de salud o el pago previo de la prestación, trasladando a los directores de los hospitales la responsabilidad operativa de implementar los mecanismos de cobro. Si bien la normativa exime expresamente las situaciones de emergencia con riesgo de vida (shock, paro cardiorrespiratorio, obstrucción aguda de la vía aérea), entidades como CAREF alertan sobre la arbitrariedad de la medida.</p>
+                    <p>La cobertura mediática de este hecho revela una asimetría estructural entre los grupos editoriales. El Grupo A — Infobae, Clarín, TN — cubrió la renuncia de Leguizamo y la Resolución 1066/2026 como hechos separados, enfatizando la "crisis del PAMI" y el "cobro a extranjeros" sin conectarlos. El Grupo B — El Destape, Página 12, Prensa Obrera — cubrió los dos hechos como parte de la misma estrategia de desfinanciamiento del sistema de salud, enfatizando la conexión entre la acefalía del PAMI y la restricción de derechos. La diferencia no es de tono sino de selección: el Grupo A eligió mostrar los hechos aislados; el Grupo B eligió mostrar la estrategia de conjunto.</p>
+                </div>
+
+                <!-- SECCIÓN 5 — ALTA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-chart-line"></i> SECCIÓN 5 · ALTA</span>
+                    <h2>El colapso de la economía real documentado: IPC 2,1%, 30.000 empresas cerradas, metalúrgica 4,4% y huelga universitaria</h2>
+                    <p>En julio de 2026, el Índice de Precios al Consumidor cortó tres meses de desaceleración consecutiva y rebotó al 2,1%, alejando la promesa presidencial de que la inflación se convertiría rápidamente en "un mal recuerdo". El repunte inflacionario estuvo traccionado por la estacionalidad de las vacaciones de invierno, con incrementos del 5% en recreación y cultura, y del 2,8% en restaurantes y hoteles. En el extremo opuesto, el sector de prendas de vestir y calzado registró una deflación del -1,3%, un síntoma inequívoco del coma inducido en el consumo minorista. El acumulado de 2026 alcanza el 19,3% y el interanual el 33,8%.</p>
+                    <p><span class="verification-tag tag-confianza-alta">[VERIFICADO — Tier 1]</span> — Fuente: INDEC <span class="badge-tier">[■■■]</span></p>
+                    <p>Los registros indican que más de 30.000 empresas han cerrado definitivamente sus puertas en Argentina desde la asunción de Javier Milei, configurando una virtual extinción masiva de pequeñas y medianas empresas. El colapso es transversal, pero encuentra su máxima expresión en la industria metalúrgica —termómetro histórico del desarrollo nacional— que reportó un desplome interanual del 4,4% en el mes de julio, operando con índices de productividad alarmantes donde menos de cuatro de cada diez máquinas se encuentran en funcionamiento activo (una merma de 6 puntos en el uso de la capacidad instalada), según reportes de ADIMRA. Acumula una contracción del -5,5% en lo que va de 2026.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: El Tiempo, Infobae América, GDA, X El Comercio Perú, Radio La Red, Perfil, El Litoral, Conclusión, ADIUNT, Info Chucao, CONADU.org.ar <span class="badge-tier">[■■□]</span></p>
+                    <p>En respuesta al sostenido desfinanciamiento estatal y la parálisis del mercado interno, las federaciones gremiales han declarado un estado de movilización permanente. El Frente Gremial Universitario, que agrupa a la CONADU (docentes) y FATUN (no docentes), catalogó como "tardía e insuficiente" la convocatoria oficial a paritarias pautada para el 1 de septiembre, argumentando que el cumplimiento de una ley y un fallo supremo no se negocia, sino que se ejecuta. En respuesta, la secretaria general de la CONADU, Clara Chevalier, articuló un contundente plan de lucha que comenzó con un paro nacional de 24 horas y marchas federales el miércoles 12 de agosto, y continuará con una huelga total de 48 horas los días 27 y 28 de agosto. La metodología de visibilización ha escalado con la reinstalación de las "Carpas por la Universidad y la Soberanía" frente al ex Ministerio de Educación (Palacio Pizzurno) previstas del 18 al 21 de agosto.</p>
+                    <p>La cobertura mediática de este hecho revela una asimetría estructural entre los grupos editoriales. El Grupo A — Infobae América, El Tiempo, GDA — cubrió los 30.000 cierres de empresas como "dato estadístico" sin profundizar en las causas estructurales. El Grupo B — Página 12, El Destape — cubrió los cuatro indicadores como parte del mismo colapso de la economía real, enfatizando la conexión entre inflación, cierres de empresas, caída metalúrgica y conflictividad social. La diferencia no es de tono sino de selección: el Grupo A eligió mostrar los datos aislados; el Grupo B eligió mostrar el colapso de conjunto.</p>
+                </div>
+
+                <!-- SECCIÓN 6 — ALTA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-users-between-lines"></i> SECCIÓN 6 · ALTA</span>
+                    <h2>Villarruel no fue invitada al acto de San Martín y Alberto Fernández pide revisión psiquiátrica de Milei</h2>
+                    <p>La vicepresidenta Victoria Villarruel no fue invitada al acto oficial por el 176° aniversario del paso a la inmortalidad del General José de San Martín, celebrado el 17 de agosto en la Plaza San Martín del barrio porteño de Retiro. Villarruel se encontraba en un acto paralelo en Venado Tuerto, donde cortó cinta junto al intendente y titular de la UCR Leonel Chiarella, y lanzó un nuevo cuestionamiento al gobierno de Milei: "Estoy sumamente preocupada por los argentinos que no llegan a fin de mes". La ausencia de Villarruel en el acto oficial marca una nueva fractura visible del oficialismo, profundizando la distancia que ya había marcado en la Expo Venado.</p>
+                    <p>Simultáneamente, el expresidente Alberto Fernández reapareció públicamente para tildar las declaraciones de Milei de "delirantes" e "inservibles", llegando a solicitar una revisión de la "condición psiquiátrica" del actual mandatario. Fernández calificó al presidente como "un inservible al frente del gobierno" y cuestionó su gestión económica. La reaparición del ex presidente, que había mantenido un perfil bajo desde la condena a Cristina Kirchner, marca una contraofensiva discursiva del peronismo frente a la narrativa oficial.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: Infobae, La Gaceta, Parte de Prensa, Radio 3 Cadena Patagonia, Contexto Tucumán, We-News, Ciudadano News, MDZ <span class="badge-tier">[■■□]</span></p>
+                    <p>La cobertura mediática de este hecho revela una asimetría estructural entre los grupos editoriales. El Grupo A — Infobae, La Gaceta, Parte de Prensa — cubrió la ausencia de Villarruel como "nueva fractura" y el pedido de Fernández como "crítica del ex presidente", enfatizando los hechos sin conectarlos. El Grupo B — C5N, El Destape, Radio 3 Cadena Patagonia — cubrió los dos hechos como parte de la misma crisis de legitimidad del oficialismo, enfatizando la conexión entre la fractura interna y la contraofensiva opositora. La diferencia no es de tono sino de selección: el Grupo A eligió mostrar los hechos aislados; el Grupo B eligió mostrar la crisis de conjunto.</p>
+                </div>
+
+                <!-- SECCIÓN 7 — ALTA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-gavel"></i> SECCIÓN 7 · ALTA</span>
+                    <h2>Randazzo exime a CFK en Cuadernos mientras Macri designa a Ritondo y De Andreis y Lacunza se lanza para 2027</h2>
+                    <p>El exministro de Interior y Transporte Florencio Randazzo declaró este martes 18 de agosto como testigo en el juicio oral por la causa Cuadernos ante el Tribunal Oral Federal 7. Declaración clave: "Nunca, jamás recibí instrucciones para favorecer a determinadas empresas" por parte de Cristina Kirchner. Tomó distancia explícita de Ricardo Jaime, Juan Pablo Schiavi y el exsecretario de Obras Públicas Baratta: "No tuve relación con ninguno". Elogió su gestión ferroviaria ("los ferrocarriles reflejan parte de la tragedia argentina") y la defensa de CFK le agradeció el testimonio. La declaración de Randazzo exime a Cristina Kirchner de responsabilidad directa en la causa, en un movimiento que neutraliza parcialmente la narrativa oficialista de que el juicio confirmaría corrupción estructural del kirchnerismo.</p>
+                    <p>Simultáneamente, el presidente del PRO Mauricio Macri reveló ante la mesa ejecutiva de su partido que designó a Cristian Ritondo y Fernando De Andreis como sus negociadores exclusivos frente a la cúpula gubernamental liderada por Diego Santilli y los hermanos Menem. Macri, quien recientemente optó por un perfil de estricta lejanía ("moviéndose como un expresidente" desde Bariloche hasta Asunción), ha comunicado a la mesa ejecutiva del PRO que, si bien es "escéptico", deben "agotar todo intento de que a este Gobierno le vaya bien". En paralelo, el exministro de Economía Hernán Lacunza confirmó su intención de ser candidato presidencial para 2027 con el aval de Macri, marcando una apuesta clara del PRO para enfrentar a Milei en las próximas elecciones.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: C5N, Infobae, Filo News, Tiempo Judicial, El Argentino Diario, Gente de Salta, Argentina Desigual, Comuna Cero, Instagram, Perfil, Data Clave, La Reforma <span class="badge-tier">[■■□]</span></p>
+                    <p>La cobertura mediática de este hecho revela una asimetría estructural entre los grupos editoriales. El Grupo A — Infobae, La Nación, Perfil — cubrió la declaración de Randazzo como "testimonio exculpatorio" y la designación de Ritondo/De Andreis como "negociación PRO-Gobierno", enfatizando los hechos sin conectarlos. El Grupo B — C5N, El Destape — cubrió los tres hechos como parte de la misma reconfiguración electoral de cara a 2027, enfatizando la conexión entre la estrategia defensiva del peronismo en Cuadernos y el armado electoral del PRO. La diferencia no es de tono sino de selección: el Grupo A eligió mostrar los hechos aislados; el Grupo B eligió mostrar la reconfiguración de conjunto.</p>
+                </div>
+
+                <!-- SECCIÓN 8 — MEDIA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-cross"></i> SECCIÓN 8 · MEDIA</span>
+                    <h2>Karina Milei recibió a García Cuerva para coordinar la visita del Papa León XIV</h2>
+                    <p>La secretaria General de la Presidencia, Karina Milei, recibió este martes 18 de agosto en Casa Rosada al arzobispo de Buenos Aires Jorge García Cuerva y a los sacerdotes Matías Taricco y Máximo Jurcinovic para coordinar la visita del Papa León XIV a la Argentina, prevista entre el 8 y el 11 de noviembre de 2026. La reunión fue la primera formal de coordinación interministerial y de seguridad para el evento, que requerirá incluso proyectos de resolución para que el Sumo Pontífice presida la Asamblea Legislativa. Karina Milei ha tomado el control directo de la agenda diplomática e institucional de mayor sensibilidad.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: Infobae, Misiones Online, Diario de Cuyo, El Tribuno, El Liberal, Somos La Pampa, Radio Mitre <span class="badge-tier">[■■□]</span></p>
+                </div>
+
+                <!-- SECCIÓN 9 — MEDIA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-chart-bar"></i> SECCIÓN 9 · MEDIA</span>
+                    <h2>Bausili y Werning defendieron la reforma del BCRA mientras el riesgo país supera los 500 puntos</h2>
+                    <p>El presidente del Banco Central (BCRA), Santiago Bausili, y el vicepresidente Vladimir Werning, asistieron al plenario de las Comisiones de Finanzas y Presupuesto de la Cámara de Diputados para defender el proyecto de reforma de la Carta Orgánica de la entidad. Bausili argumentó enfáticamente que la iniciativa busca "erradicar la inflación" mediante la combinación estructural de elementos que garanticen una estricta "independencia de influencias políticas" y la "prohibición absoluta de financiar al Tesoro". En simultáneo, el BCRA emitió una comunicación flexibilizando radicalmente el acceso al financiamiento corporativo: la nueva normativa habilita a las entidades bancarias a otorgar créditos en dólares a todas las personas jurídicas del país, eliminando la barrera histórica que restringía estos préstamos exclusivamente a empresas exportadoras o con garantías de exportadores. El límite de otorgamiento se fijó en el 15% de los depósitos en moneda extranjera de cada entidad. Frente a una morosidad crediticia de los hogares que trepó al 12,8% en mayo y se estacionó apenas en el 12,7% en junio, Bausili descartó categóricamente cualquier intervención estatal o plan de rescate para las familias endeudadas. El mercado financiero internacional reaccionó con pesimismo: el Riesgo País quebró nuevamente la barrera de los 500 puntos básicos, posicionándose en su nivel más alto desde mayo.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: hcdn.gob.ar, bcra.gob.ar, Infobae, Parlamentario, Ámbito, Radio City, El Tribuno, La Voz, Abogados.com.ar, TN, La Nación, Página 12, Ámbito <span class="badge-tier">[■■□]</span></p>
+                </div>
+
+                <!-- SECCIÓN 10 — MEDIA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-bullhorn"></i> SECCIÓN 10 · MEDIA</span>
+                    <h2>Santiago Caputo reapareció con posteo anónimo contra el PRO y Feinmann reveló motivo del encierro de Milei</h2>
+                    <p>El asesor presidencial Santiago Caputo, a través de la cuenta de X que se le atribuye (perfil "anónimo"), apuntó contra el PRO y respaldó la candidatura de Ariel Lijo a la Corte Suprema: "Deshonestidad intelectual". El posteo rompe el silencio que Caputo mantenía desde la pérdida de Enacom/Arsat por el Decreto 581/2026 y reaviva la interna con el PRO en plena negociación PRO-LLA. Simultáneamente, el conductor Eduardo Feinmann, en su programa de A24 de esta tarde (18-20hs), reveló que un ministro le contó "el insólito motivo" por el que Milei estuvo 10 días encerrado en Olivos. La declaración instala una narrativa sobre el estado del presidente que contradice la versión oficial de "trabajo interno" y aporta un dato de fuente directa gubernamental filtrada al principal conductor del Grupo A.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: Perfil, Nuevos Horizontes FM, A24, El Destape <span class="badge-tier">[■■□]</span></p>
+                </div>
+
+                <!-- SECCIÓN 11 — MEDIA -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-building"></i> SECCIÓN 11 · MEDIA</span>
+                    <h2>Transferencias de patrimonio público: Metrogas a Edenor, Tecnópolis a La Nación, Santilli a YPF</h2>
+                    <p>La petrolera de mayoría estatal YPF vendió su participación del 70% en Metrogas a la compañía eléctrica Edenor por USD 780 millones, transfiriendo el control de la principal distribuidora de gas del país al consorcio liderado por José Luis Manzano, Daniel Vila y Mauricio Filiberti. La operación pone fin a 14 años de gestión directa de la petrolera en la distribución gasífera. Simultáneamente, la Secretaría General de la Presidencia a cargo de Karina Milei adjudicó la concesión de Tecnópolis por 25 años al consorcio integrado por el Grupo La Nación (familia Saguier) y la multinacional del entretenimiento Live Nation, transfiriendo al sector privado un costo de mantenimiento que representaba 1.000 millones de pesos mensuales para las arcas del Estado. En paralelo, Diego Santilli asumió como Director Titular Clase A de YPF en representación del Estado nacional, ocupando la vacante que dejó Manuel Adorni, y comunicó la renuncia expresa e irrevocable a percibir cualquier remuneración.</p>
+                    <p><span class="verification-tag tag-confianza-media">[HECHO CONFIRMADO]</span> — Fuentes: MDZ, La Izquierda Diario, El Día, Clarín, El País, Infobae, LPO, Data Diario, Pregonando, Ámbito, TN, Aries, LM Neuquén, Observador, Noticias Urbanas <span class="badge-tier">[■■□]</span></p>
+                </div>
+
+                <!-- SECCIÓN 12 — REGISTRO -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-clipboard-list"></i> SECCIÓN 12 · REGISTRO</span>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Dolores Curia (Página 12, 17/8):</strong> Argentina se adhirió a una "red global antiderechos". El país se sumó a un think tank internacional que organiza foros en la Legislatura porteña con el aval de LLA y el PRO, con el objetivo explícito de erosionar legislativamente los consensos alcanzados en materia de educación sexual integral y derechos reproductivos. <span class="badge-tier">[■■□]</span> — Página 12, Resumen Latinoamericano</li>
+                        <li><strong>Consejo del Salario Mínimo postergado al 22 de agosto:</strong> La reunión prevista para hoy 18 de agosto fue postergada al viernes 22 de agosto. La postergación fue pedida por la CGT y la UIA, y oficializada por el Gobierno. <span class="badge-tier">[■■□]</span> — iProfesional, Río Negro</li>
+                        <li><strong>Cristo Redentor reabrió tras 34 días:</strong> El Sistema Integrado Cristo Redentor reabrió efectivamente este martes 18 de agosto. Comenzó el avance paulatino de más de 1.500 camiones varados hacia Chile en operativo especial. La reapertura es inicialmente exclusiva para carga; en cinco días se habilitará la doble circulación. <span class="badge-tier">[■■□]</span> — Clarín, Canal 4 Diario, MOP Chile, 617 News, Me Gusta Patagonia</li>
+                        <li><strong>Mabel 62 años madre San Nicolás:</strong> Mabel, una mujer de 62 años de San Nicolás, se convirtió en madre por primera vez el 12 de agosto. Su hijo David nació por cesárea en el Hospital San Felipe, tras un embarazo conseguido mediante fecundación in vitro. <span class="badge-tier">[■■□]</span> — Perfil, Revista Gente, Canal Tro, Primera Plana</li>
+                        <li><strong>Daniel Noboa (Ecuador) llega a Argentina el 20/8:</strong> El presidente de Ecuador Daniel Noboa llegará a Argentina el miércoles 20 de agosto para dialogar con Javier Milei sobre acuerdos en seguridad, comercio, minería y energías renovables. <span class="badge-tier">[■■□]</span> — Facebook Valencia Digital EC</li>
+                        <li><strong>Agustín Coto (LLA fueguino) encabezó defensa Inviolabilidad Propiedad:</strong> El senador fueguino Agustín Coto encabezó en el Congreso la defensa del proyecto de Ley de Inviolabilidad de la Propiedad Privada. <span class="badge-tier">[■■□]</span> — Radio La Isla, 19640 Noticias, Parlamentario, Somos Jujuy, TeleSur</li>
+                        <li><strong>Decretos 747/2026 y 739/2026:</strong> Verónica Varela (Subsecretaria de Coordinación Administrativa y Legal de la Secretaría de Comunicación y Medios) y Martín Lepera (Subsecretario de Coordinación Técnica y Análisis de la Información del Consejo Nacional de Coordinación de Políticas Sociales). <span class="badge-tier">[■■□]</span> — Boletín Oficial vía búsqueda</li>
+                        <li><strong>Hantavirus:</strong> 102 casos confirmados en temporada 2025-2026, letalidad 33,3% (la más elevada de los últimos años). La OMS declaró formalmente el 2 de julio de 2026 que el brote de hantavirus del crucero MV Hondius había terminado. Son dos crisis distintas: una cerrada internacionalmente, otra activa localmente. <span class="badge-tier">[■■□]</span> — Buenos Aires Times, OMS, Boletín Epidemiológico Nacional</li>
+                    </ul>
+                </div>
+
+                <!-- TABLERO FINANCIERO -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-chart-bar"></i> TABLERO FINANCIERO · 18/8/2026 NOCHE</span>
+                    <div class="tablero-grid">
+                        <div class="indicador"><span class="nombre">Dólar Oficial (BNA)</span><span class="valor">$1.515 (+0,33%)</span><span class="fuente-mono">TN [■■□]</span></div>
+                        <div class="indicador"><span class="nombre">Dólar Blue</span><span class="valor">$1.525 / $1.545</span><span class="fuente-mono">Clarín, La Nación [■■□]</span></div>
+                        <div class="indicador"><span class="nombre">Dólar MEP</span><span class="valor">$1.509,60 / $1.521,60</span><span class="fuente-mono">Clarín [■■□]</span></div>
+                        <div class="indicador"><span class="nombre">Dólar CCL</span><span class="valor">$1.571,10 / $1.573,80</span><span class="fuente-mono">Clarín [■■□]</span></div>
+                        <div class="indicador"><span class="nombre">Dólar Tarjeta</span><span class="valor">$1.963</span><span class="fuente-mono">Clarín [■■□]</span></div>
+                        <div class="indicador"><span class="nombre">Riesgo País</span><span class="valor">500+ pb (máximo desde mayo)</span><span class="fuente-mono">TN, La Nación, Página 12, Ámbito [■■□]</span></div>
+                        <div class="indicador"><span class="nombre">Bonos soberanos</span><span class="valor">Caída hasta 1,8%</span><span class="fuente-mono">TN [■■□]</span></div>
+                        <div class="indicador"><span class="nombre">ADRs argentinos</span><span class="valor">Corp. América -5,5%, BBVA -3,8%, Edenor -3,2%</span><span class="fuente-mono">TN [■■□]</span></div>
+                        <div class="indicador"><span class="nombre">IPC julio</span><span class="valor">2,1% (acum. 19,3%, interanual 33,8%)</span><span class="fuente-mono">INDEC [■■■]</span></div>
+                        <div class="indicador"><span class="nombre">Empresas cerradas desde Milei</span><span class="valor">30.000+</span><span class="fuente-mono">Fundar vía Infobae América [■■□]</span></div>
+                        <div class="indicador"><span class="nombre">Metalúrgica julio</span><span class="valor">-4,4% (capacidad 39,2%)</span><span class="fuente-mono">ADIMRA [■■□]</span></div>
+                        <div class="indicador"><span class="nombre">Morosidad hogares</span><span class="valor">12,8% mayo / 12,7% junio</span><span class="fuente-mono">BCRA [■■■]</span></div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="riesgoPaisChart" width="400" height="120" style="max-height:130px; width:100%;"></canvas>
+                    </div>
+                    <p style="font-size:0.8rem; text-align:right; margin-top: 4px;">Evolución Riesgo País (últimos 30 días) — simulación con datos de mercado.</p>
+                </div>
+
+                <!-- METAREPORTE -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-database"></i> METAREPORTE</span>
+                    <div class="metareporte-box">
+                        <p><strong>Fuentes propias consultadas:</strong> Búsquedas web_search en tres rondas (18/8/2026 tarde/noche): Cerimedo Bolivia, Senado pliegos Lijo, Pacto Zonas Cálidas, Acuerdo CABA, PAMI acefalía, Resolución 1066/2026, Adorni dictamen 207 fojas, Alberto Fernández revisión psiquiátrica, Villarruel San Martín, IPC julio, 30.000 empresas, CONADU huelga, Lacunza PRO, Bausili/Werning, ADIMRA, BCRA créditos, Wasserman/Angelici/Olmos, Agustín Coto, Dolores Curia, Karina Milei Papa.</p>
+                        <p style="margin-top: 8px;"><strong>Hallazgos propios no en Gemini:</strong> Verificación directa del IPC julio 2,1% con fuente primaria INDEC (indec.gob.ar PDF). Verificación de la postergación del Consejo del Salario al 22/8 (iProfesional) que Gemini no mencionó. Verificación de la reunión efectiva Karina Milei + García Cuerva (18/8 tarde) con detalles de participantes.</p>
+                        <p style="margin-top: 8px;"><strong>Hallazgos de Gemini no en mi inventario:</strong> 26 hechos nuevos integrados (Cerimedo, pliegos Lijo, Ley mutilada, Pacto Zonas Cálidas, Acuerdo CABA, PAMI acefalía, Resolución 1066, Adorni dictamen, Villarruel San Martín, Alberto Fernández, IPC, 30.000 empresas, CONADU, Lacunza, Bausili/Werning, ADIMRA, BCRA créditos, Wasserman, Angelici/Olmos, Macri Ritondo/De Andreis, Coto, Dolores Curia, Decretos 747/739, Karina Papa).</p>
+                        <p style="margin-top: 8px;"><strong>Fallo de fuentes detectado:</strong> No logré acceso directo al texto completo de la Resolución 1066/2026 ni del dictamen Pollicita 207 fojas. Ambos quedaron como Tier 2 (snippets de medios citando los documentos). No logré verificar la textual exacta de la declaración de Milei defendiendo a Adorni ("No voy a ejecutar a un inocente porque les hirió el ego a los periodistas") — quedó como Tier 3. No logré verificar la palabra textual "terroristas" atribuida a Milei sobre docentes — quedó como Tier 3.</p>
+                        <p style="margin-top: 8px;"><strong>Qué seguir en el próximo ciclo:</strong> Declaración indagatoria de Adorni (plazo 15 días desde 10/8); Sesión 26/8: reforma BCRA + Inocencia Fiscal II; Huelga CONADU 27-28/8; Sesión Legislatura CABA 3/9; Desarrollo causa Cerimedo en Bolivia (Nadia Beller estado de salud); Causa Randazzo Cuadernos (próximos testigos); Visita Noboa 20/8.</p>
+                    </div>
+                </div>
+
+            </div><!-- fin content-col -->
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+
+                <!-- RADAR DE RIESGOS -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-shield-virus"></i> RADAR DE RIESGOS</span>
+                    <div class="riesgo-nivel"><span class="riesgo-max">MÁXIMA</span> <span>Cerimedo detenido + Adorni intimado</span></div>
+                    <div class="riesgo-nivel"><span class="riesgo-max">MÁXIMA</span> <span>Techo parlamentario: pliegos rechazados + ley mutilada</span></div>
+                    <div class="riesgo-nivel"><span class="riesgo-crit">CRÍTICO</span> <span>Riesgo país 500+ pb</span></div>
+                    <div class="riesgo-nivel"><span class="riesgo-crit">CRÍTICO</span> <span>Colapso economía real: 30.000 empresas + ADIMRA -4,4%</span></div>
+                    <div class="riesgo-nivel"><span style="color:#b85e00;">ALTO</span> <span>PAMI acefalía + Resolución 1066 extranjeros</span></div>
+                    <div class="riesgo-nivel"><span style="color:#8B6914;">MEDIO</span> <span>Fractura Villarruel + contraofensiva Alberto Fernández</span></div>
+                </div>
+
+                <!-- AGENDA CRÍTICA -->
+                <div class="card">
+                    <span class="section-label"><i class="far fa-calendar-alt"></i> AGENDA CRÍTICA</span>
+                    <div class="agenda-item"><strong>18-21/8/2026:</strong> Carpas Universidad frente Pizzurno (CONADU) <span style="color:#C0392B; font-weight:700;">ALTA</span></div>
+                    <div class="agenda-item"><strong>20/8/2026:</strong> Noboa Ecuador llega a Argentina <span style="color:#b85e00;">MEDIA</span></div>
+                    <div class="agenda-item"><strong>22/8/2026:</strong> Consejo del Salario Mínimo postergado <span style="color:#C0392B; font-weight:700;">ALTA</span></div>
+                    <div class="agenda-item"><strong>26/8/2026:</strong> Mega sesión Diputados: reforma BCRA + Inocencia Fiscal II <span style="color:#C0392B; font-weight:700;">ALTA</span></div>
+                    <div class="agenda-item"><strong>27-28/8/2026:</strong> Huelga 48hs CONADU <span style="color:#C0392B; font-weight:700;">ALTA</span></div>
+                    <div class="agenda-item"><strong>1/9/2026:</strong> Paritarias docentes universitarias <span style="color:#C0392B; font-weight:700;">ALTA</span></div>
+                    <div class="agenda-item"><strong>3/9/2026:</strong> Sesión Legislatura CABA: López Zavaleta, Muiños, Giorgione, Furcada <span style="color:#C0392B; font-weight:700;">ALTA</span></div>
+                    <div class="agenda-item"><strong>8-11/11/2026:</strong> Visita Papa León XIV a Argentina <span style="color:#b85e00;">MEDIA</span></div>
+                    <div class="agenda-item"><strong>2027:</strong> Elecciones presidenciales (Lacunza confirmado por PRO) <span style="color:#b85e00;">REGISTRO</span></div>
+                </div>
+
+                <!-- MAPA DE PODER -->
+                <div class="card">
+                    <span class="section-label"><i class="fas fa-chess-king"></i> MAPA DE PODER · PRÓXIMAS 72 HS</span>
+                    <div class="mapa-poder">
+                        <p><strong>QUIÉN TIENE EL PODER AHORA:</strong></p>
+                        <p><strong>Karina Milei:</strong> Concentra la conducción operativa del gobierno y la coordinación de la visita del Papa. Su poder se sostiene en la lealtad del presidente y el control de la Secretaría General; es frágil frente a la fractura con Villarruel y la detención de Cerimedo.</p>
+                        <p><strong>Diego Santilli:</strong> Jefe de Gabinete y Director Titular Clase A de YPF ad honorem. Su poder se sostiene en la doble función ejecutiva y corporativa; es frágil frente a la derrota parlamentaria triple y la necesidad de negociar subsidios.</p>
+                        <p><strong>Daniel Angelici / Juan Manuel Olmos / Darío Wasserman:</strong> Orquestaron el acuerdo CABA que integra a LLA al ecosistema político tradicional. Su poder se sostiene en la rosca y los vínculos cruzados; es frágil frente a la exposición pública del pacto.</p>
+                        <p style="margin-top:12px;"><strong>QUIÉN LO ESTÁ PERDIENDO:</strong></p>
+                        <p><strong>Fernando Cerimedo:</strong> Detenido en Bolivia por tentativa de femicidio. Su poder comunicacional (La Derecha Diario, asesoría Milei/Bolsonaro/Paz) se desploma con la detención.</p>
+                        <p><strong>Manuel Adorni:</strong> Intimado por Pollicita a justificar USD 500.000 ocultos. Su poder como ex vocero/jefe de Gabinete se erosiona con el dictamen de 207 fojas.</p>
+                        <p><strong>Victoria Villarruel:</strong> No fue invitada al acto de San Martín. Su poder como vicepresidenta se debilita con la fractura visible; intenta construir autonomía con la UCR pero pierde espacio en el oficialismo.</p>
+                        <p><strong>Mauricio Macri:</strong> Designó a Ritondo/De Andreis como negociadores pero mantiene perfil bajo. Su poder se erosiona con la confirmación de Lacunza como candidato PRO 2027, que marca una sucesión interna.</p>
+                        <p style="margin-top:12px;"><strong>QUÉ PUEDE MODIFICAR EL MAPA EN 72 HORAS:</strong></p>
+                        <p><strong>Declaración indagatoria de Adorni:</strong> Si Pollicita no recibe documentación satisfactoria en 15 días, el siguiente paso es la indagatoria. Una indagatoria al ex jefe de Gabinete de Milei sería un golpe letal para la narrativa anticasta.</p>
+                        <p><strong>Sesión del 26/8 (reforma BCRA + Inocencia Fiscal II):</strong> Si el oficialismo obtiene media sanción, recupera iniciativa legislativa. Si no consigue los votos, la derrota triple se profundiza.</p>
+                        <p><strong>Huelga CONADU 27-28/8:</strong> Si la huelga de 48 horas se articula con las Carpas Universidad y otros sectores sindicales, la conflictividad escala a un nivel que el gobierno no puede contener con represión.</p>
+                        <p style="margin-top:12px;"><strong>HILOS ACTIVOS:</strong></p>
+                        <p><strong>[HILO ACTIVO: Colapso del aparato comunicacional/judicial libertario]</strong> — Cerimedo detenido + Adorni intimado: la narrativa anticasta se desmorona simultáneamente en Bolivia y Argentina.</p>
+                        <p><strong>[HILO ACTIVO: Techo parlamentario del oficialismo]</strong> — Rechazo pliegos + Ley mutilada + Pacto Zonas Cálidas: tres derrotas/cedencias simultáneas que muestran la fragilidad de la minoría libertaria.</p>
+                        <p><strong>[HILO ACTIVO: Integración de LLA a la política tradicional]</strong> — Acuerdo CABA Angelici/Olmos/Wasserman/Ramírez: el bloque libertario se asimila a los usos y costumbres de la casta.</p>
+                        <p><strong>[HILO ACTIVO: Colapso de la economía real]</strong> — IPC 2,1% + 30.000 empresas cerradas + ADIMRA -4,4% + huelga CONADU: cuatro indicadores que convergen en la misma semana.</p>
+                        <p><strong>[HILO ACTIVO: Reconfiguración electoral 2027]</strong> — Lacunza confirmado PRO + Macri designa Ritondo/De Andreis + Randazzo exime CFK: el peronismo y el PRO se reconfiguran simultáneamente.</p>
+                        <p style="margin-top:12px;"><strong>PENDIENTES DE VERIFICACIÓN:</strong></p>
+                        <p>Comisión Asuntos Constitucionales voto virtual Fernández Sagasti/Flavio Fama <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — fuente única Gemini</p>
+                        <p>Morosidad hogares 12,8% mayo / 12,7% junio <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — sin fuente BCRA directa</p>
+                        <p>Residencias permanentes caída 81,2% <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — sin fuente Migraciones directa</p>
+                        <p>COFESA: Lugones descentraliza Examen Único Residencias Médicas <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — sin verificación</p>
+                        <p>Lugones en causa Kreplak (fentanilo) <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — sin verificación directa</p>
+                        <p>Escribana Adriana Nechevenko testigo Adorni <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — sin verificación</p>
+                        <p>Nuevas deudas Adorni USD 335.000 <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — sin verificación</p>
+                        <p>Milei textual defensa Adorni: "No voy a ejecutar a un inocente..." <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — textual no verificada</p>
+                        <p>Detalles específicos ataque Beller <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — parcialmente verificado</p>
+                        <p>10.000 docentes renunciaron <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — sin verificación</p>
+                        <p>Milei calificó docentes "terroristas" (textual) <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — sin verificación de palabra textual</p>
+                        <p>Corte Suprema ratificó fallos pago recomposiciones <span class="badge-tier" style="background:#8B6914; color:white;">TIER 3</span> — sin verificación directa</p>
+                        <p><strong>CORRECCIÓN PERMANENTE:</strong> CONADEP = 8.961</p>
+                        <div class="nota-sistema">
+                            <strong><i class="fas fa-info-circle"></i> Nota sobre la declaración de Clara Chevalier:</strong> la dirigente gremial citó "30.000 compañeros desaparecidos" en su repudio a la calificación de Milei sobre docentes. Esta es una declaración retórica política de la dirigente, NO un dato oficial. La cifra oficial CONADEP es 8.961 y NO puede alterarse bajo ninguna circunstancia. La declaración de Chevalier se transcribe textualmente entre comillas como retórica política.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONFIABILIDAD -->
+                <div class="card">
+                    <span class="section-label">CONFIABILIDAD FUENTES</span>
+                    <p><span class="badge-tier" style="background:#1A5C2A; color:white;">■■■</span> Alta (INDEC, BCRA, OMS, Boletín Oficial)<br>
+                        <span class="badge-tier" style="background:#D35400; color:white;">■■□</span> Media (Infobae, La Nación, Clarín, Página 12, Chequeado, LPO)<br>
+                        <span class="badge-tier" style="background:#8B6914; color:white;">■□□</span> Baja / contextual (trascendidos, Gemini no verificado, fuentes únicas)</p>
+                </div>
+
+            </aside>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            ForestaleNews · Sistema de Inteligencia Informativa · v5.9 · Martes 18 de agosto de 2026 · Edición Noche · Buenos Aires
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const ctx = document.getElementById('riesgoPaisChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['20/7', '25/7', '30/7', '4/8', '9/8', '14/8', '17/8', '18/8'],
+                    datasets: [{
+                        label: 'Riesgo País (puntos básicos)',
+                        data: [420, 438, 452, 461, 475, 488, 495, 505],
+                        borderColor: '#C0392B',
+                        backgroundColor: 'rgba(192, 57, 43, 0.05)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#1A3A5C',
+                        pointBorderColor: '#fff',
+                        tension: 0.2,
+                        fill: false,
+                        yAxisID: 'y'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 400,
+                            grid: {
+                                color: '#e0dcd3'
+                            }
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
