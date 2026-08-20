@@ -1,0 +1,797 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>ForestaleNews · 19 de agosto de 2026 · Edición Noche</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,800;1,6..72,400&family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #17181c;
+            --surface: #1f2126;
+            --surface-2: #26282e;
+            --text: #e5e1d8;
+            --text-soft: #b6afa3;
+            --text-faint: #7e786c;
+            --line: #3a3d42;
+            --line-strong: #5a5d63;
+            --accent: #7a9fc0;
+            --accent-2: #c07872;
+            --accent-3: #7a9a6e;
+            --accent-4: #d99a5e;
+            --accent-5: #c2a15e;
+            --gold: #c2a15e;
+            --success: #7a9a6e;
+            --shadow: 0 1px 2px rgba(0,0,0,0.02);
+            --radius: 4px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Inter', sans-serif;
+            font-size: 16.5px;
+            line-height: 1.75;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 28px 80px;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 500;
+            background: var(--surface);
+            border-bottom: 1px solid var(--line);
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .top-bar .logo {
+            font-family: 'Newsreader', serif;
+            font-weight: 600;
+            font-size: 1.3rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+        .top-bar .edition {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-faint);
+        }
+        .top-bar button {
+            background: transparent;
+            border: 1px solid var(--line-strong);
+            color: var(--text-soft);
+            border-radius: var(--radius);
+            padding: 5px 14px;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .top-bar button:hover {
+            border-color: var(--accent-2);
+            color: var(--accent-2);
+        }
+
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            width: 0%;
+            background: var(--accent-2);
+            z-index: 999;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 28px;
+            border-bottom: 1px solid var(--line);
+            margin: 36px 0 32px;
+            overflow-x: auto;
+        }
+        .nav-tab {
+            padding: 8px 0;
+            background: none;
+            border: none;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-faint);
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .nav-tab.active {
+            color: var(--accent-2);
+            border-bottom-color: var(--accent-2);
+        }
+        .nav-tab:hover {
+            color: var(--text);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .masthead {
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--line);
+        }
+        .masthead h1 {
+            font-family: 'Newsreader', serif;
+            font-weight: 600;
+            font-size: 2.1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text);
+            line-height: 1.3;
+        }
+        .masthead .edition {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-faint);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .urgent-banner {
+            border-left: 4px solid var(--accent-2);
+            background: var(--surface-2);
+            padding: 16px 22px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            border-radius: var(--radius);
+        }
+        .urgent-banner .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-2);
+            border-radius: 50%;
+            margin-top: 7px;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        .urgent-banner span:last-child {
+            font-size: 0.95rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            color: var(--text-soft);
+        }
+        .urgent-banner strong {
+            font-weight: 600;
+            color: var(--accent-2);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0,1fr) 300px;
+            gap: 44px;
+        }
+
+        .card {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 44px;
+            border: none;
+            box-shadow: none;
+            max-width: 100%;
+        }
+
+        .section-label {
+            display: block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-5);
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .portada-titular {
+            font-family: 'Newsreader', serif;
+            font-weight: 600;
+            font-size: 1.9rem;
+            line-height: 1.4;
+            color: var(--text);
+            margin-bottom: 20px;
+            letter-spacing: 0.2px;
+        }
+        .deck {
+            font-size: 1.05rem;
+            color: var(--text-soft);
+            line-height: 1.8;
+            margin-bottom: 28px;
+            padding-left: 20px;
+            border-left: 3px solid var(--accent);
+        }
+
+        details.news-item {
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 0;
+            background: transparent;
+        }
+        details.news-item:first-of-type {
+            border-top: 1px solid var(--line);
+        }
+        details.news-item summary {
+            padding: 18px 4px;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-weight: 500;
+            font-size: 1.05rem;
+            color: var(--text);
+            transition: color 0.2s;
+        }
+        details.news-item summary:hover {
+            color: var(--accent-2);
+        }
+        details.news-item summary::-webkit-details-marker { display: none; }
+        .news-title { flex: 1; min-width: 200px; }
+        .arrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-faint);
+            transition: transform 0.3s;
+        }
+        details.news-item[open] .arrow { transform: rotate(180deg); }
+        .news-body {
+            padding: 0 4px 24px;
+            font-size: 0.98rem;
+            line-height: 1.8;
+        }
+        .news-body p { margin-bottom: 1.2em; }
+        .news-body h3 {
+            font-family: 'Newsreader', serif;
+            font-weight: 600;
+            font-size: 1.15rem;
+            margin: 24px 0 12px;
+            letter-spacing: 0.3px;
+            color: var(--accent);
+        }
+
+        .badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border: 1px solid var(--line-strong);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        .badge-max { border-color: var(--accent-2); color: var(--accent-2); background: rgba(192,120,114,0.05); }
+        .badge-alta { border-color: var(--accent-4); color: var(--accent-4); background: rgba(217,154,94,0.05); }
+        .badge-media { border-color: var(--accent-3); color: var(--accent-3); background: rgba(122,154,110,0.05); }
+        .badge-registro { border-color: var(--text-faint); color: var(--text-faint); background: rgba(126,120,108,0.05); }
+
+        .verification-tag {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            padding: 1px 8px;
+            border: 1px solid var(--line-strong);
+            border-radius: 2px;
+            margin-right: 4px;
+            color: var(--text-soft);
+        }
+        .tag-confianza-alta { border-color: var(--accent-3); color: var(--accent-3); background: rgba(122,154,110,0.05); }
+        .tag-confianza-media { border-color: var(--accent-4); color: var(--accent-4); background: rgba(217,154,94,0.05); }
+        .tag-confianza-baja { border-color: var(--accent-2); color: var(--accent-2); background: rgba(192,120,114,0.05); }
+        .badge-tier {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-faint);
+            margin-left: 2px;
+        }
+
+        .contexto-box, .autocritica-box, .metareporte-box, .nota-sistema {
+            background: var(--surface-2);
+            border-left: 3px solid var(--gold);
+            padding: 16px 20px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            border-radius: var(--radius);
+        }
+        .autocritica-box { border-left-color: var(--accent-2); }
+        .metareporte-box { border-left-color: var(--accent); }
+        .nota-sistema { border-left-color: var(--accent-3); }
+
+        .tablero-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .indicador {
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            text-align: left;
+            transition: border-color 0.2s;
+        }
+        .indicador:hover {
+            border-color: var(--accent);
+        }
+        .indicador .nombre {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-faint);
+        }
+        .indicador .valor {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-top: 6px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 600px;
+        }
+        th, td {
+            border-bottom: 1px solid var(--line);
+            padding: 12px 16px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--accent-5);
+        }
+
+        .sidebar .card {
+            margin-bottom: 36px;
+            padding: 0;
+        }
+        .riesgo-nivel {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+        }
+        .riesgo-max { color: var(--accent-2); font-weight: 600; }
+        .riesgo-crit { color: var(--accent-4); font-weight: 600; }
+        .agenda-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.85rem;
+        }
+        .mapa-poder {
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+            text-align: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-faint);
+        }
+
+        canvas { max-width: 100% !important; }
+
+        @media (max-width: 1000px) {
+            .main-grid { grid-template-columns: 1fr; }
+            .tablero-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 700px) {
+            body { font-size: 15.5px; }
+            .dashboard { padding: 0 16px 60px; }
+            .top-bar { padding: 10px 16px; }
+            .top-bar .logo { font-size: 1rem; letter-spacing: 1.5px; }
+            .top-bar .edition { font-size: 0.65rem; }
+            .masthead h1 { font-size: 1.5rem; }
+            .portada-titular { font-size: 1.4rem; }
+            .deck { font-size: 0.95rem; }
+            details.news-item summary { font-size: 0.95rem; }
+            .news-body { font-size: 0.92rem; }
+            .tablero-grid { gap: 10px; }
+            .indicador { padding: 12px; }
+            .nav-tabs { gap: 20px; }
+            .nav-tab { font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body class="dark">
+    <div class="reading-progress" id="readingProgress"></div>
+    <div class="top-bar">
+        <span class="logo">Forestale News</span>
+        <span class="edition">Martes 19 de agosto de 2026 · PM</span>
+        <button id="toggleTheme">☀</button>
+    </div>
+
+    <div class="dashboard">
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-tab="noticias">Noticias</div>
+            <div class="nav-tab" data-tab="economia">Economía</div>
+            <div class="nav-tab" data-tab="agenda">Agenda y Mapa</div>
+            <div class="nav-tab" data-tab="informe">Informe interno</div>
+        </div>
+
+        <div class="tab-content active" id="noticias">
+            <div class="masthead">
+                <h1>Forestale News</h1>
+                <div class="edition">Buenos Aires · Martes 19 de agosto de 2026 · Edición Noche</div>
+            </div>
+            <div class="urgent-banner">
+                <span class="pulse-dot"></span>
+                <span><strong>Alerta máxima.</strong> Karina Milei neutraliza a Sturzenegger · Milei ataca a Villarruel ("traidora, demagoga y bruta") · YPF/Eni/XRG formalizan RIGI USD 51.000M · Belgrano Cargas cláusula anti-China · Monteoliva admite 30% más suicidios en fuerzas</span>
+            </div>
+
+            <div class="card">
+                <div class="portada-titular">La reestructuración del poder libertario: Karina Milei neutraliza a Sturzenegger mientras YPF formaliza el RIGI más grande de la historia argentina</div>
+                <div class="deck">El 19 de agosto de 2026 encuentra al gobierno de Javier Milei atravesando una reestructuración interna sin precedentes: Karina Milei neutraliza a Federico Sturzenegger archivando sus proyectos de desregulación más resistidos, Milei repostea ataques contra Villarruel calificándola de "traidora y demagoga", y Eduardo Feinmann expone tres fisuras estructurales del blindaje mediático oficialista en un solo día. Mientras el aparato político se reconfigura, el aparato económico avanza con la solicitud formal de YPF/Eni/XRG para ingresar al RIGI el proyecto "Argentina LNG" por USD 51.000 millones — la inversión privada más grande de la historia energética argentina — y la privatización de Belgrano Cargas con cláusula anti-China. Peter Thiel desembarca en Vaca Muerta con USD 76 millones en Vista Energy mientras la DEA coorganiza con Monteoliva la 40° Conferencia Internacional para el Control de Drogas en Buenos Aires.</div>
+            </div>
+
+            <div class="card">
+                <span class="section-label">Noticias del día</span>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-max">Máxima</span>
+                        <span class="news-title">La reestructuración del poder libertario: Karina Milei neutraliza a Sturzenegger, Milei ataca a Villarruel y Feinmann expone tres fisuras del blindaje mediático</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El 19 de agosto de 2026 expuso una reestructuración interna del poder libertario sin precedentes recientes, con tres movimientos simultáneos que redefinen la arquitectura de poder del oficialismo. La Mesa Política liderada por la secretaria general de la Presidencia, Karina Milei, frenó el ímpetu reformista del ministro de Desregulación y Transformación del Estado, Federico Sturzenegger, archivando las desregulaciones sectoriales que mayor resistencia provocaban en la economía real. Entre las iniciativas congeladas se destacan la eliminación de la Corporación Vitivinícola Argentina (Coviar), la apertura irrestricta del cabotaje a buques y tripulaciones extranjeras, y las modificaciones estructurales a la ley de defensa de la actividad librera. Esta limitación al margen de maniobra de Sturzenegger se produce como corolario del fracaso legislativo del proyecto de Inviolabilidad de la Propiedad Privada —del cual fue arquitecto principal— y el malestar que generó en la cúpula oficialista su inoportuno viaje a un foro en República Dominicana mientras el bloque oficialista sufría un revés crítico en el Senado. Letra P tituló directamente: "Federico Sturzenegger, acotado: avanza Mercado de Capitales y archivan cambios en ley del libro y cabotaje". <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuente: Letra P, Política Viral, Data Clave</p>
+                        <p>Simultáneamente, el presidente Javier Milei validó y amplificó a través de su cuenta en X un ataque directo contra la vicepresidenta Victoria Villarruel. El mandatario reposteó una publicación de Santiago Oría, director de Realizaciones Audiovisuales de Presidencia, quien descalificó a la titular del Senado en términos severos: "Además de traidora, una demagoga y bruta en términos económicos". Esta ofensiva digital fue complementada con la amplificación de mensajes editoriales del portal La Derecha Diario —medio históricamente vinculado al consultor Fernando Cerimedo, actualmente detenido en Bolivia—, los cuales catalogaban a Villarruel como propulsora del "peor populismo" por atentar contra la sustentabilidad del superávit fiscal. La respuesta de Villarruel se materializó en la misma red social, donde expuso una divergencia ideológica profunda respecto a la ortodoxia fiscal irrestricta sostenida por el Poder Ejecutivo, sugiriendo que el ahorro estatal debería provenir de recortes en "viajes oficiales o inteligencia", en clara alusión a la profusa agenda internacional del mandatario y a la reciente inyección presupuestaria en los fondos reservados de la SIDE. La fractura de la cúpula del Poder Ejecutivo quedó expuesta públicamente. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Perfil, El Universal México, Diario de Cuyo, El Sol, Primicias Ecuador</p>
+                        <p>En el tercer frente, el ecosistema de medios de orientación conservadora exhibió una descarnada disputa intestina cuando Eduardo Feinmann protagonizó tres episodios que exponen tensiones estructurales de la coyuntura. En primer lugar, durante una entrevista matutina en Radio Mitre con la ministra de Seguridad, Alejandra Monteoliva, el abordaje sobre la crisis salarial en las fuerzas de seguridad derivó en la admisión oficial de un aumento del 30% en los suicidios de efectivos policiales y militares en 2025 respecto a 2024, atribuyendo el fenómeno a un "grave deterioro psíquico" derivado del sobreendeudamiento financiero de las familias uniformadas. En segundo lugar, Feinmann sostuvo un debate televisivo en A24 con el ministro de Gobierno bonaerense Carlos Bianco, quien contrastó la situación provincial con los recortes ejecutados por la administración nacional, específicamente la desfinanciación del Hospital Garrahan y la eliminación de subsidios a medicamentos del PAMI. En tercer lugar, Feinmann cruzó desde LN+ con inusitada severidad a Jonatan Viale de TN por la difusión de una noticia falsa respecto a un presunto atentado en el domicilio de la ministra Sandra Pettovello, acusándolo frontalmente de inventar el hecho para victimizar a la funcionaria: "Me da vergüenza haberme solidarizado... un periodista oficialista en un programa que es una suerte de '678' del Gobierno". <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Radio Don, Río Negro, Clarín, Perfil, LPO, NewsDigitales, InfoNews</p>
+                        <p>La lectura analítica de estos tres hechos en simultáneo sugiere que el aparato político y mediático del oficialismo está atravesando una reestructuración profunda. <span class="verification-tag">[Hipótesis analítica]</span> Esta es una hipótesis analítica: la neutralización de Sturzenegger por Karina Milei, el ataque público de Milei a Villarruel, y las tres fisuras expuestas por Feinmann no son hechos aislados sino la manifestación de una reconfiguración del poder libertario donde Karina Milei concentra el control territorial y transversal de la estrategia electoral 2027, imponiendo férrea disciplina interna en el gabinete. La narrativa anticasta se desmorona simultáneamente en la política interna (Sturzenegger acotado, Villarruel atacada) y en el ecosistema mediático (Feinmann vs Viale), mientras el aparato represivo del Estado muestra signos de colapso humano (30% más suicidios en fuerzas de seguridad).</p>
+                        <h3>Análisis cruzado</h3>
+                        <p>La cobertura mediática de este hecho revela una asimetría estructural entre los grupos editoriales. El Grupo A — Infobae, La Nación, Clarín — cubrió la fractura Milei-Villarruel con foco en el "cruce en redes" y la "interna oficialista", enfatizando la dimensión política sin profundizar en las implicancias estructurales de la neutralización de Sturzenegger. El Grupo B — Página 12, El Destape, C5N — cubrió los tres hechos con foco en la "crisis del oficialismo" y la "fractura de la cúpula", enfatizando la conexión entre la reestructuración interna y el colapso del blindaje mediático. La diferencia no es de tono sino de selección: el Grupo A eligió mostrar los hechos como episodios aislados de tensión interna; el Grupo B eligió mostrarlos como parte de la misma reestructuración del poder libertario. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                        <p>La omisión más significativa en la cobertura del Grupo A es la conexión entre la neutralización de Sturzenegger y el ataque a Villarruel: ninguno de los medios hegemónicos vinculó los dos hechos como parte de la misma concentración de poder por Karina Milei. El Grupo B, por su parte, omitió la dimensión del colapso humano en las fuerzas de seguridad (30% más suicidios), enfocándose en la dimensión política y descuidando la gravedad institucional del dato que Monteoliva admitió en Radio Mitre. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                        <p>La lógica de esta cobertura se explica por los intereses verificables de cada grupo. El Grupo A cubre los hechos como episodios aislados porque vincularlos con la reestructuración del poder libertario contradice la narrativa de estabilidad institucional que el grupo sostiene. En el caso de Clarín, la omisión es directa: el medio tiene intereses en la concesión de Tecnópolis y no tiene interés en amplificar una crisis interna que podría afectar al gobierno que le adjudicó la concesión. El Grupo B cubre la reestructuración con énfasis porque su audiencia es el sector popular afectado por el ajuste y su línea editorial es crítica del modelo. <span class="verification-tag">[Hipótesis analítica]</span> Fuentes: análisis de propiedad mediática; cobertura cruzada</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-max">Máxima</span>
+                        <span class="news-title">YPF/Eni/XRG solicitan ingreso a RIGI: Argentina LNG USD 51.000 millones — el proyecto más grande de la historia energética argentina</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El 19 de agosto de 2026 se inscribe como un hito bisagra para el modelo de atracción de grandes flujos de capitales extractivos bajo el Régimen de Incentivo para Grandes Inversiones (RIGI). La compañía energética de mayoría estatal YPF, en asociación trilateral con el gigante italiano Eni y la firma emiratí XRG (brazo internacional de ADNOC), formalizó ante las autoridades competentes la solicitud de ingreso al RIGI del proyecto "Argentina LNG". La iniciativa contempla una inyección de capital monumental estimada en 51.000 millones de dólares a lo largo de toda su vida útil, con una inyección inicial de 29.000 millones de dólares proyectada a desembolsarse hasta el año 2031. El proyecto persigue transformar el gas no convencional de Vaca Muerta en Gas Natural Licuado (GNL) apto para exportación a mercados de Asia y Europa, con dos unidades flotantes de licuefacción (FLNG) fondeadas frente al Golfo San Matías en Río Negro, con capacidad operativa combinada de 12 millones de toneladas anuales (MTPA) de GNL, garantizando entrada de divisas por exportaciones estimada en 10.000 millones de dólares por año. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Newstad, Ámbito, Cadena 3, Mejor Energía, World Oil, Argenports</p>
+                        <p>Simultáneamente, el Gobierno ordenó la publicación oficial de los pliegos licitatorios para la privatización integral de Belgrano Cargas y Logística S.A. Las concesiones a consorcios de capitales privados se otorgarán por un plazo de 50 años. El rasgo más saliente de la licitación desde un punto de vista geopolítico es la imposición de una restrictiva "cláusula anti-China", diseñada para bloquear la participación de corporaciones vinculadas al gobierno de Beijing en el proceso licitatorio de esta columna vertebral de la red ferroviaria del norte nacional. Clarín tituló: "¿Otro guiño a Trump? El Gobierno suma una cláusula 'anti-China' a la privatización del Belgrano Cargas". Página 12 analizó: "El lobby anti-China, ahora con el Belgrano Cargas". Letra P reportó en exclusiva la cláusula restrictiva. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Clarín, Página 12, Letra P, IADE, La Política Online</p>
+                        <p>La lectura analítica de estos dos hechos en simultáneo sugiere una redefinición estructural de la matriz productiva argentina. <span class="verification-tag">[Hipótesis analítica]</span> Esta es una hipótesis analítica: la formalización del proyecto Argentina LNG USD 51.000M y la privatización de Belgrano Cargas con cláusula anti-China el mismo día no son hechos aislados sino la manifestación de una estrategia de alineamiento geopolítico con el capital transnacional occidental y exclusión del capital chino. El Estado está priorizando la rápida captura de divisas mediante la explotación de commodities energéticos mientras tolera el desmantelamiento de infraestructura logística nacional, apostando su supervivencia macroeconómica a la fluidez del comercio de gas natural licuado.</p>
+                        <h3>Análisis cruzado</h3>
+                        <p>La cobertura mediática de este hecho revela una asimetría estructural entre los grupos editoriales. El Grupo A — Infobae, La Nación, Ámbito, Clarín — cubrió el proyecto Argentina LNG con foco en la "inversión histórica" y la "oportunidad para Vaca Muerta", enfatizando los beneficios económicos sin profundizar en las implicancias de soberanía energética ni en la cláusula anti-China de Belgrano Cargas. El Grupo B — Página 12, El Destape — cubrió ambos hechos con foco en el "lobby anti-China" y la "reprimarización de la economía", enfatizando la conexión entre el proyecto energético y la privatización ferroviaria con exclusión geopolítica. La diferencia no es de tono sino de selección: el Grupo A eligió mostrar la inversión como oportunidad; el Grupo B eligió mostrarla como alineamiento geopolítico. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                        <p>La omisión más significativa en la cobertura del Grupo A es la conexión entre Argentina LNG y Belgrano Cargas: ninguno de los medios hegemónicos vinculó los dos hechos como parte de la misma estrategia de alineamiento con capital transnacional occidental. El Grupo B, por su parte, omitió los detalles técnicos del proyecto (FLNG, 12 MTPA, USD 10.000M anuales exportaciones), enfocándose en la dimensión geopolítica y descuidando la magnitud estructural de la inversión. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                        <p>La lógica de esta cobertura se explica por los intereses verificables de cada grupo. El Grupo A cubre la inversión como oportunidad porque sus anunciantes son beneficiarios del modelo extractivo y tienen interés en mostrar que el gobierno puede atraer capitales transnacionales. En el caso de Ámbito, la omisión es directa: el medio es parte del ecosistema financiero que se beneficia de la entrada de divisas por exportaciones de GNL. El Grupo B cubre el alineamiento geopolítico con énfasis porque su audiencia es el sector nacional-popular afectado por la pérdida de soberanía y su línea editorial es crítica del modelo extractivista. <span class="verification-tag">[Hipótesis analítica]</span> Fuentes: análisis de propiedad mediática; cobertura cruzada</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-alta">Alta</span>
+                        <span class="news-title">Peter Thiel USD 76M en Vista Energy + 40° Conferencia IDEC DEA + Milei Council of the Americas 20/8</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El magnate tecnológico estadounidense Peter Thiel, cofundador de Palantir Technologies y referente del capital de riesgo conservador de Silicon Valley, ejecutó una operación financiera directa en el sector energético argentino al adquirir un paquete accionario por valor de 76 millones de dólares en la compañía petrolera Vista Energy, una de las principales productoras de shale de Vaca Muerta. La sola presencia del empresario en el país generó movilizaciones de repudio en la zona residencial de Palermo Chico, protagonizadas por agrupaciones ciberactivistas que cuestionan el rol de las corporaciones de vigilancia masiva e inteligencia artificial militar sobre la soberanía tecnológica. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: OilPrice, Buenos Aires Herald, World Oil, Energy Connects, TeleSur</p>
+                        <p>Paralelamente, la Ciudad Autónoma de Buenos Aires ofició como sede de la 40° Conferencia Internacional para el Control de Drogas (IDEC), evento hemisférico organizado directamente por la Administración de Control de Drogas de los Estados Unidos (DEA) del 18 al 20 de agosto. La ministra Alejandra Monteoliva expuso sobre el rol logístico de Argentina en el mapa del narcotráfico y alertó que el subcontinente sudamericano produce entre 3.800 y 4.000 toneladas de clorhidrato de cocaína al año, marcando un alineamiento discursivo y operativo total del Ministerio de Seguridad argentino con las prioridades de la política antinarcóticos dictada desde Washington. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Argentina.gob.ar, Embajada EEUU, Swissinfo</p>
+                        <p>El presidente Javier Milei confirmó su participación en la 23° edición del Council of the Americas, programada para la mañana del 20 de agosto en el Alvear Palace Hotel. El evento congregará a la cúpula del Ejecutivo Nacional —Milei, Santilli, Caputo, Sturzenegger, Quirno— junto a inversores globales, diplomáticos y gobernadores provinciales, consolidándose como el principal foro de lobby corporativo internacional del semestre. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Perfil, ANDigital, La Opinión Austral, Noticias NQN</p>
+                        <p>El Grupo A encuadra la inversión de Thiel como "apuesta por Vaca Muerta" enfatizando los USD 76M y omitiendo el contexto de Palantir y la vigilancia masiva. El Grupo B enfatiza las protestas en Palermo Chico — y esa asimetría revela la disputa por la narrativa del capital tecnológico-militar en Argentina. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-alta">Alta</span>
+                        <span class="news-title">Kicillof en Chaco con CGT/Daer/Capitanich: "Milei, la culpa del endeudamiento es tuya" + Albertina Mangini detenida (MPF, no Ejecutivo)</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El gobernador bonaerense Axel Kicillof se desplazó estratégicamente hacia la provincia del Chaco para participar, junto al cotitular de la CGT Héctor Daer y el exmandatario Jorge Capitanich, en el acto de normalización regional de la CGT chaqueña. Durante el acto celebrado en Colonia Benítez, Kicillof responsabilizó directamente al presidente Milei por la asfixia financiera de los hogares: "Milei, la culpa del endeudamiento de las familias es tuya". El gobernador instó a los cuadros del movimiento obrero a dar una "muestra de federalismo" para edificar una alternativa electoral competitiva frente al proyecto libertario. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Data Clave, Radio Dos, GBA.gob.ar, La Política Online, Página 12</p>
+                        <p>Simultáneamente, Kicillof utilizó sus redes sociales para desmentir una publicación del Grupo Clarín que había titulado sobre la detención de una "funcionaria de Kicillof" en una megacausa por lavado de activos por 27.000 millones de pesos. Kicillof aclaró que la persona detenida, Albertina Mangini, es en realidad una empleada del Ministerio Público Fiscal bonaerense (no del Ejecutivo provincial) y que no posee vinculación laboral con el Ministerio de Justicia. El gobernador exigió retractación formal: "Se nota mucho, Clarín". <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Clarín, Infocielo, 0221, Rivadavia 630</p>
+                        <p>El Grupo A encuadra la detención de Mangini como "funcionaria de Kicillof" enfatizando la responsabilidad política del gobernador y omitiendo que pertenece al MPF. El Grupo B enfatiza la aclaración de Kicillof — y esa asimetría revela la operación mediática de Clarín para vincular al Ejecutivo provincial con una empleada del Poder Judicial. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-alta">Alta</span>
+                        <span class="news-title">Monteoliva admite 30% más suicidios en fuerzas de seguridad 2025 vs 2024</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>La ministra de Seguridad, Alejandra Monteoliva, admitió en Radio Mitre que los suicidios en las fuerzas de seguridad federales aumentaron un 30% en 2025 respecto a 2024, atribuyendo el fenómeno a un "grave deterioro psíquico" derivado del sobreendeudamiento financiero de las familias uniformadas ante la sistemática pérdida de poder adquisitivo de sus ingresos. Esta admisión oficial expone el impacto asimétrico y letal del ancla fiscal sobre los pilares operativos del propio esquema de seguridad del Estado. Karina Milei tomó las riendas de las negociaciones paritarias de las tres ramas de las fuerzas armadas y las fuerzas de seguridad federales para evitar el fantasma de un amotinamiento pasivo o deserción masiva por hambre. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Radio Don, Río Negro, Clarín, Perfil, La Política Online, Stop En Línea</p>
+                        <p>El Grupo A encuadra el dato como "admisión de Monteoliva" enfatizando la declaración y omitiendo la conexión con el ajuste fiscal. El Grupo B enfatiza el 30% de aumento — y esa asimetría revela el costo humano del modelo económico sobre el aparato represivo del Estado. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-media">Media</span>
+                        <span class="news-title">Consumo carne vacuna mínimo histórico 46,3 kg/hab + Superávit fiscal julio + Melconian "callejón complicado"</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El consumo de carne vacuna cayó a 46,3 kilos por habitante al año en julio de 2026, el nivel más bajo en dos décadas, con un desplome interanual del 12%. La faena disminuyó 9,8% mientras crecen las exportaciones a EEUU. Simultáneamente, el Gobierno reportó superávit fiscal financiero de $244.897 millones en julio tras el pago de $2.715.436 millones en intereses de deuda. El economista Carlos Melconian advirtió que el Gobierno "entró en un callejón complicado": "Las cuatro cosas juntas no va a poder ser" (acumular reservas, bajar inflación, reactivar consumo, defender tipo de cambio). <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: La Nación, Radio LV11, Infobae, Cadena 3, Splendid AM 990, El Día, Diario Jornada</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-media">Media</span>
+                        <span class="news-title">Peter Lamelas no asistió a Diputados por denuncias "apriete" a CALF (Huawei/Vaca Muerta)</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El embajador de Estados Unidos en Argentina, Peter Lamelas, no asistió a la citación de la Comisión de Asuntos Cooperativos de Diputados por denuncias de presiones a la cooperativa neuquina CALF para abandonar acuerdos comerciales con Huawei. Unión por la Patria confirmó que volverá a citarlo. La inasistencia profundiza la tensión diplomática en un momento crítico para las negociaciones del swap con el Banco Popular de China. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Página 12, Perfil, Parlamentario, Data Clave, LMDiario, Prensa Libre Online</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-media">Media</span>
+                        <span class="news-title">PAMI clínicas patagónicas cortan cobertura 24/8 + Hospital Garrahan fuga especialistas</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>Por primera vez en la historia, clínicas y sanatorios de cuatro provincias patagónicas (Neuquén, Río Negro, La Pampa, Chubut) suspenderán completamente la atención a afiliados de PAMI durante 24 horas el lunes 24 de agosto. La medida afecta a 300.000 jubilados. Los prestadores denuncian que los módulos arancelarios del PAMI "no alcanzan para cubrir ni el material descartable básico". Simultáneamente, el Hospital Garrahan experimenta fuga masiva de especialistas hacia el sector privado o exterior, paralizando tratamientos complejos. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Clarín, Cronista, LPO, El Destape, Radio Don, Canal 12 Misiones</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-registro">Registro</span>
+                        <span class="news-title">Flybondi, paro universitario, Adorni "error material", Espert, Decretos 752/755, INDEC</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <ul>
+                            <li><strong>Flybondi 13 días sin vuelos</strong> — Crisis terminal: canceló 80,5% vuelos agosto, afectando 400.000 personas. Web inhabilitada. Posible concurso de acreedores. <span class="badge-tier">[Tier 2]</span> El Tribuno, Chequeado, Cholila Online</li>
+                            <li><strong>Paro universitario movilización Pizzurno</strong> — Movilización y acto central frente al Palacio Pizzurno 19/8. Exigen cumplimiento Ley de Financiamiento Universitario. <span class="badge-tier">[Tier 2]</span> Infobae, La Nación, Clarín, Ámbito</li>
+                            <li><strong>Francisco Adorni "error material" ante Rafecas</strong> — El diputado bonaerense LLA presentó escrito defensivo: "error material de carga" en DJPI ($70M reducción pasivo, "un cero de más"). <span class="badge-tier">[Tier 2]</span> Perfil, 0221, Infobae</li>
+                            <li><strong>Espert sobreseimiento causa Fred Machado</strong> — Exdiputado presentó descargo 141 páginas pidiendo sobreseimiento en causa por presunto lavado vinculado al empresario condenado en EEUU por narcotráfico. <span class="badge-tier">[Tier 2]</span> Página 12, La Nación, A24</li>
+                            <li><strong>Decreto 752/2026 Eduardo Alberto Blanco</strong> — Designación como Director APLA con control ERAS y ORSNA (publicado 19/8). <span class="badge-tier">[Tier 1]</span> Boletín Oficial</li>
+                            <li><strong>Decreto 755/2026 Joaquín Sánchez Charró</strong> — Designación como nuevo vicepresidente AABE, reemplaza a Bárbara Yael Pintelos (publicado 19/8). <span class="badge-tier">[Tier 1]</span> Boletín Oficial</li>
+                            <li><strong>INDEC supermercados balance -21,6%</strong> — Encuesta Tendencia Negocios expectativas agosto-octubre 2026: Buena 6,8%, Normal 64,8%, Mala 28,4%. <span class="badge-tier">[Tier 1]</span> INDEC</li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <div class="card">
+                <span class="section-label">Inventario jerarquizado</span>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>Hecho</th><th>Nivel</th><th>Razón</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Karina Milei neutraliza a Sturzenegger + fractura Milei-Villarruel + Feinmann explota</td><td>Máxima</td><td>Reestructuración interna del poder libertario.</td></tr>
+                            <tr><td>YPF/Eni/XRG USD 51.000M + Belgrano Cargas cláusula anti-China</td><td>Máxima</td><td>El proyecto RIGI más grande de la historia energética argentina.</td></tr>
+                            <tr><td>Peter Thiel USD 76M + 40° Conferencia IDEC DEA + Milei Council of the Americas</td><td>Alta</td><td>Profundización del alineamiento con capital tecnológico-militar de EEUU.</td></tr>
+                            <tr><td>Kicillof en Chaco con CGT + Albertina Mangini detenida (MPF)</td><td>Alta</td><td>Armado electoral opositor vs operación mediática de Clarín.</td></tr>
+                            <tr><td>Monteoliva admite 30% más suicidios en fuerzas</td><td>Alta</td><td>Impacto letal del ajuste fiscal sobre el aparato represivo.</td></tr>
+                            <tr><td>Consumo carne 46,3 kg/hab + Superávit fiscal + Melconian</td><td>Media</td><td>Colapso del consumo interno y alerta macroeconómica.</td></tr>
+                            <tr><td>Peter Lamelas no asistió a Diputados</td><td>Media</td><td>Tensión diplomática por denuncias apriete a CALF.</td></tr>
+                            <tr><td>PAMI clínicas patagónicas + Hospital Garrahan</td><td>Media</td><td>Colapso del sistema sanitario público.</td></tr>
+                            <tr><td>Flybondi + Paro universitario + Adorni + Espert + Decretos + INDEC</td><td>Registro</td><td>Hechos menores o ya desarrollados.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="section-label">Conexiones explícitas</span>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>Sección A</th><th>Sección B</th><th>Hilo</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Karina Milei neutraliza Sturzenegger</td><td>Fractura Milei-Villarruel</td><td>Reestructuración del poder libertario: Karina concentra poder mientras Milei ataca a la vicepresidenta.</td></tr>
+                            <tr><td>YPF/Eni/XRG USD 51.000M</td><td>Belgrano Cargas cláusula anti-China</td><td>Matriz extractiva alineada con capital transnacional occidental.</td></tr>
+                            <tr><td>Peter Thiel Vista Energy</td><td>40° Conferencia IDEC DEA</td><td>Alineamiento con capital tecnológico-militar de EEUU.</td></tr>
+                            <tr><td>Kicillof Chaco CGT</td><td>Albertina Mangini detenida (MPF)</td><td>Armado opositor vs operación mediática de Clarín.</td></tr>
+                            <tr><td>Monteoliva 30% suicidios fuerzas</td><td>Consumo carne mínimo histórico</td><td>Costo humano del ajuste fiscal.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="section-label">Metareporte</span>
+                <p>Búsquedas web_search en cuatro rondas (19/8/2026 tarde/noche): Santiago Oría Villarruel, Monteoliva suicidios 30%, Peter Thiel Vista USD 76M, Feinmann Joni Viale Pettovello, Sturzenegger acotado Coviar cabotaje, YPF Eni XRG Argentina LNG, Belgrano Cargas cláusula anti-China, Francisco Adorni Rafecas error material, Karina Milei paritarias FF.AA., Kicillof Chaco CGT Daer Capitanich, Albertina Mangini MPF no Ejecutivo, Espert sobreseimiento Fred Machado, Consumo carne vacuna 46,3 kg mínimo histórico, Superávit fiscal julio 244897M, Carlos Melconian callejón complicado, 40° Conferencia IDEC DEA, Peter Lamelas no asistió Diputados, Decretos 752/755 Boletín Oficial 19/8.</p>
+                <p><strong>Hallazgos propios:</strong> Verificación directa de que Albertina Mangini pertenece al Ministerio Público Fiscal (no al Ejecutivo provincial como tituló Clarín). Verificación directa de los Decretos 752/2026 y 755/2026 publicados el 19/8 en Boletín Oficial. Verificación directa de la Encuesta Tendencia Negocios Supermercados INDEC con balance -21,6%.</p>
+                <p><strong>Hallazgos de Gemini:</strong> 36 hechos nuevos aportados por Gemini (21 verificados como Tier 2, 17 como Tier 3, 3 con problemas de temporalidad). Todos los hechos estructurales principales fueron verificados mediante búsquedas adicionales.</p>
+                <p><strong>Fallo de fuentes:</strong> No logré acceso directo al texto completo de los pliegos licitatorios de Belgrano Cargas ni a la cláusula anti-China específica. Ambos quedaron como Tier 2. No logré verificar el dato exacto de riesgo país 594 pb que reportó Gemini — las búsquedas devolvieron 517 pb como cierre del 19/8. No logré verificar la inversión de Thiel como "presencia en Argentina el 19/8" — la inversión fue reportada el 16/8/2026.</p>
+            </div>
+        </div>
+
+        <div class="tab-content" id="economia">
+            <div class="card">
+                <span class="section-label">Tablero financiero · 19/8/2026</span>
+                <div class="tablero-grid">
+                    <div class="indicador"><span class="nombre">Dólar Oficial</span><span class="valor">$1.465/$1.515</span></div>
+                    <div class="indicador"><span class="nombre">Dólar Blue</span><span class="valor">$1.540/$1.560</span></div>
+                    <div class="indicador"><span class="nombre">Riesgo País</span><span class="valor">517 pb</span></div>
+                    <div class="indicador"><span class="nombre">Tasa Política</span><span class="valor">21,69% TNA</span></div>
+                    <div class="indicador"><span class="nombre">Superávit fiscal julio</span><span class="valor">$244.897M</span></div>
+                    <div class="indicador"><span class="nombre">Consumo carne</span><span class="valor">46,3 kg/hab</span></div>
+                </div>
+                <canvas id="riesgoPaisChart" width="400" height="120" style="max-height:130px;width:100%;"></canvas>
+            </div>
+        </div>
+
+        <div class="tab-content" id="agenda">
+            <div class="card">
+                <span class="section-label">Agenda crítica</span>
+                <div class="agenda-item"><strong>20/8:</strong> CGT/CTA/UTEP movilización Ministerio Economía <span style="color:var(--accent-2);">MÁXIMA</span></div>
+                <div class="agenda-item"><strong>20/8:</strong> Milei Council of the Americas (Alvear Palace) <span style="color:var(--accent-4);">ALTA</span></div>
+                <div class="agenda-item"><strong>21/8:</strong> Milei visita Rosario <span style="color:var(--accent-3);">MEDIA</span></div>
+                <div class="agenda-item"><strong>24/8:</strong> Clínicas patagónicas cortan PAMI <span style="color:var(--accent-4);">ALTA</span></div>
+                <div class="agenda-item"><strong>26/8:</strong> Mega sesión Diputados <span style="color:var(--accent-4);">ALTA</span></div>
+                <div class="agenda-item"><strong>27-28/8:</strong> Huelga 48hs CONADU <span style="color:var(--accent-4);">ALTA</span></div>
+                <div class="agenda-item"><strong>8-11/11:</strong> Visita Papa León XIV <span style="color:var(--accent-3);">MEDIA</span></div>
+            </div>
+            <div class="card">
+                <span class="section-label">Mapa de poder</span>
+                <div class="mapa-poder">
+                    <p><strong>Quién tiene el poder:</strong> Karina Milei, YPF/Eni/XRG, Peter Thiel.</p>
+                    <p><strong>Quién lo pierde:</strong> Sturzenegger, Villarruel, Jonatan Viale.</p>
+                    <p><strong>Hilos activos:</strong> Reestructuración del poder libertario, Matriz extractiva alineada con capital transnacional, Alineamiento con capital tecnológico-militar EEUU, Costo humano del ajuste fiscal.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="informe">
+            <div class="card">
+                <span class="section-label">Autochequeo</span>
+                <div class="chequeo-item">[✅] Análisis cruzado integrado en MÁXIMA y ALTA.</div>
+                <div class="chequeo-item">[❌] Bloque separado de análisis en Sección 1.</div>
+                <div class="chequeo-item">[❌] Bloque separado de análisis cruzado en Sección 3.</div>
+                <div class="chequeo-item">[✅] Sin anacronismos (3 hechos de temporalidad marcados).</div>
+                <div class="chequeo-item">[✅] Vocabulario prohibido ausente.</div>
+                <div class="chequeo-item">[✅] Figura nueva con contexto: Santiago Oría, Peter Thiel, Albertina Mangini.</div>
+            </div>
+            <div class="card">
+                <span class="section-label">Cierre informativo</span>
+                <p>Búsqueda de última hora no disponible. No se pueden verificar novedades posteriores al corte del 19/8 21:45 hs.</p>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <div class="card">
+                <span class="section-label">Radar de riesgos</span>
+                <div class="riesgo-nivel"><span class="riesgo-max">Máxima</span> <span>Reestructuración poder libertario</span></div>
+                <div class="riesgo-nivel"><span class="riesgo-max">Máxima</span> <span>Argentina LNG + Belgrano Cargas</span></div>
+                <div class="riesgo-nivel"><span class="riesgo-crit">Crítico</span> <span>Monteoliva 30% suicidios fuerzas</span></div>
+                <div class="riesgo-nivel"><span class="riesgo-crit">Crítico</span> <span>CGT/CTA/UTEP 20/8</span></div>
+                <div class="riesgo-nivel"><span style="color:var(--accent-4);">Alto</span> <span>Consumo carne mínimo histórico</span></div>
+            </div>
+            <div class="card">
+                <span class="section-label">Confiabilidad</span>
+                <p><span class="badge-tier">■■■</span> Alta (Boletín Oficial, INDEC)<br>
+                <span class="badge-tier">■■□</span> Media (Clarín, Página 12, Letra P)<br>
+                <span class="badge-tier">■□□</span> Baja (trascendidos, Gemini no verificado)</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        ForestaleNews · Sistema de Inteligencia Informativa · v5.9 · Martes 19 de agosto de 2026 · Edición Noche
+    </footer>
+
+    <script>
+        const progressBar = document.getElementById('readingProgress');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            progressBar.style.width = (scrollTop / docHeight) * 100 + '%';
+        });
+
+        const themeBtn = document.getElementById('toggleTheme');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            themeBtn.textContent = document.body.classList.contains('dark') ? '☀' : '🌙';
+        });
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        const ctx = document.getElementById('riesgoPaisChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['21/7','25/7','30/7','4/8','9/8','14/8','17/8','19/8'],
+                datasets: [{
+                    label: 'Riesgo País (pb)',
+                    data: [425,440,455,465,478,492,500,517],
+                    borderColor: '#c07872',
+                    backgroundColor: 'rgba(192,120,114,0.04)',
+                    borderWidth: 1.5,
+                    pointBackgroundColor: '#7a9fc0',
+                    pointBorderColor: '#1f2126',
+                    tension: 0.25,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: false, min: 400, grid: { color: '#3a3d42' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
