@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>ForestaleNews · 20 de agosto de 2026 · Edición AM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,800;1,6..72,400&family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #17181c;
+            --surface: #1f2126;
+            --surface-2: #26282e;
+            --text: #e5e1d8;
+            --text-soft: #b6afa3;
+            --text-faint: #7e786c;
+            --line: #3a3d42;
+            --line-strong: #5a5d63;
+            --accent: #7a9fc0;
+            --accent-2: #c07872;
+            --accent-3: #7a9a6e;
+            --accent-4: #d99a5e;
+            --accent-5: #c2a15e;
+            --gold: #c2a15e;
+            --success: #7a9a6e;
+            --shadow: 0 1px 2px rgba(0,0,0,0.02);
+            --radius: 4px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Inter', sans-serif;
+            font-size: 16.5px;
+            line-height: 1.75;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 28px 80px;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 500;
+            background: var(--surface);
+            border-bottom: 1px solid var(--line);
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .top-bar .logo {
+            font-family: 'Newsreader', serif;
+            font-weight: 600;
+            font-size: 1.3rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+        .top-bar .edition {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-faint);
+        }
+        .top-bar button {
+            background: transparent;
+            border: 1px solid var(--line-strong);
+            color: var(--text-soft);
+            border-radius: var(--radius);
+            padding: 5px 14px;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .top-bar button:hover {
+            border-color: var(--accent-2);
+            color: var(--accent-2);
+        }
+
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            width: 0%;
+            background: var(--accent-2);
+            z-index: 999;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 28px;
+            border-bottom: 1px solid var(--line);
+            margin: 36px 0 32px;
+            overflow-x: auto;
+        }
+        .nav-tab {
+            padding: 8px 0;
+            background: none;
+            border: none;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-faint);
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .nav-tab.active {
+            color: var(--accent-2);
+            border-bottom-color: var(--accent-2);
+        }
+        .nav-tab:hover {
+            color: var(--text);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .masthead {
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--line);
+        }
+        .masthead h1 {
+            font-family: 'Newsreader', serif;
+            font-weight: 600;
+            font-size: 2.1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text);
+            line-height: 1.3;
+        }
+        .masthead .edition {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-faint);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .urgent-banner {
+            border-left: 4px solid var(--accent-2);
+            background: var(--surface-2);
+            padding: 16px 22px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            border-radius: var(--radius);
+        }
+        .urgent-banner .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-2);
+            border-radius: 50%;
+            margin-top: 7px;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        .urgent-banner span:last-child {
+            font-size: 0.95rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            color: var(--text-soft);
+        }
+        .urgent-banner strong {
+            font-weight: 600;
+            color: var(--accent-2);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0,1fr) 300px;
+            gap: 44px;
+        }
+
+        .card {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 44px;
+            border: none;
+            box-shadow: none;
+            max-width: 100%;
+        }
+
+        .section-label {
+            display: block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-5);
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .portada-titular {
+            font-family: 'Newsreader', serif;
+            font-weight: 600;
+            font-size: 1.9rem;
+            line-height: 1.4;
+            color: var(--text);
+            margin-bottom: 20px;
+            letter-spacing: 0.2px;
+        }
+        .deck {
+            font-size: 1.05rem;
+            color: var(--text-soft);
+            line-height: 1.8;
+            margin-bottom: 28px;
+            padding-left: 20px;
+            border-left: 3px solid var(--accent);
+        }
+
+        details.news-item {
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 0;
+            background: transparent;
+        }
+        details.news-item:first-of-type {
+            border-top: 1px solid var(--line);
+        }
+        details.news-item summary {
+            padding: 18px 4px;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-weight: 500;
+            font-size: 1.05rem;
+            color: var(--text);
+            transition: color 0.2s;
+        }
+        details.news-item summary:hover {
+            color: var(--accent-2);
+        }
+        details.news-item summary::-webkit-details-marker { display: none; }
+        .news-title { flex: 1; min-width: 200px; }
+        .arrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-faint);
+            transition: transform 0.3s;
+        }
+        details.news-item[open] .arrow { transform: rotate(180deg); }
+        .news-body {
+            padding: 0 4px 24px;
+            font-size: 0.98rem;
+            line-height: 1.8;
+        }
+        .news-body p { margin-bottom: 1.2em; }
+        .news-body h3 {
+            font-family: 'Newsreader', serif;
+            font-weight: 600;
+            font-size: 1.15rem;
+            margin: 24px 0 12px;
+            letter-spacing: 0.3px;
+            color: var(--accent);
+        }
+
+        .badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border: 1px solid var(--line-strong);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        .badge-max { border-color: var(--accent-2); color: var(--accent-2); background: rgba(192,120,114,0.05); }
+        .badge-alta { border-color: var(--accent-4); color: var(--accent-4); background: rgba(217,154,94,0.05); }
+        .badge-media { border-color: var(--accent-3); color: var(--accent-3); background: rgba(122,154,110,0.05); }
+        .badge-registro { border-color: var(--text-faint); color: var(--text-faint); background: rgba(126,120,108,0.05); }
+
+        .verification-tag {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            padding: 1px 8px;
+            border: 1px solid var(--line-strong);
+            border-radius: 2px;
+            margin-right: 4px;
+            color: var(--text-soft);
+        }
+        .tag-confianza-alta { border-color: var(--accent-3); color: var(--accent-3); background: rgba(122,154,110,0.05); }
+        .tag-confianza-media { border-color: var(--accent-4); color: var(--accent-4); background: rgba(217,154,94,0.05); }
+        .tag-confianza-baja { border-color: var(--accent-2); color: var(--accent-2); background: rgba(192,120,114,0.05); }
+        .badge-tier {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-faint);
+            margin-left: 2px;
+        }
+
+        .contexto-box, .autocritica-box, .metareporte-box, .nota-sistema {
+            background: var(--surface-2);
+            border-left: 3px solid var(--gold);
+            padding: 16px 20px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            border-radius: var(--radius);
+        }
+        .autocritica-box { border-left-color: var(--accent-2); }
+        .metareporte-box { border-left-color: var(--accent); }
+        .nota-sistema { border-left-color: var(--accent-3); }
+
+        .tablero-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .indicador {
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            text-align: left;
+            transition: border-color 0.2s;
+        }
+        .indicador:hover {
+            border-color: var(--accent);
+        }
+        .indicador .nombre {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-faint);
+        }
+        .indicador .valor {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-top: 6px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 600px;
+        }
+        th, td {
+            border-bottom: 1px solid var(--line);
+            padding: 12px 16px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--accent-5);
+        }
+
+        .sidebar .card {
+            margin-bottom: 36px;
+            padding: 0;
+        }
+        .riesgo-nivel {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+        }
+        .riesgo-max { color: var(--accent-2); font-weight: 600; }
+        .riesgo-crit { color: var(--accent-4); font-weight: 600; }
+        .agenda-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.85rem;
+        }
+        .mapa-poder {
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+            text-align: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-faint);
+        }
+
+        canvas { max-width: 100% !important; }
+
+        @media (max-width: 1000px) {
+            .main-grid { grid-template-columns: 1fr; }
+            .tablero-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 700px) {
+            body { font-size: 15.5px; }
+            .dashboard { padding: 0 16px 60px; }
+            .top-bar { padding: 10px 16px; }
+            .top-bar .logo { font-size: 1rem; letter-spacing: 1.5px; }
+            .top-bar .edition { font-size: 0.65rem; }
+            .masthead h1 { font-size: 1.5rem; }
+            .portada-titular { font-size: 1.4rem; }
+            .deck { font-size: 0.95rem; }
+            details.news-item summary { font-size: 0.95rem; }
+            .news-body { font-size: 0.92rem; }
+            .tablero-grid { gap: 10px; }
+            .indicador { padding: 12px; }
+            .nav-tabs { gap: 20px; }
+            .nav-tab { font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body class="dark">
+    <div class="reading-progress" id="readingProgress"></div>
+    <div class="top-bar">
+        <span class="logo">Forestale News</span>
+        <span class="edition">Jueves 20 de agosto de 2026 · AM</span>
+        <button id="toggleTheme">☀</button>
+    </div>
+
+    <div class="dashboard">
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-tab="noticias">Noticias</div>
+            <div class="nav-tab" data-tab="economia">Economía</div>
+            <div class="nav-tab" data-tab="agenda">Agenda y Mapa</div>
+            <div class="nav-tab" data-tab="informe">Informe interno</div>
+        </div>
+
+        <div class="tab-content active" id="noticias">
+            <div class="masthead">
+                <h1>Forestale News</h1>
+                <div class="edition">Buenos Aires · Jueves 20 de agosto de 2026 · Edición AM</div>
+            </div>
+            <div class="urgent-banner">
+                <span class="pulse-dot"></span>
+                <span><strong>Alerta máxima.</strong> Salario real perfora piso de 2023 · 28,4% hogares con 3+ deudas · Marcha CGT 13hs · Passalacqua rompe con Rovira · Beller acusa a Karina Milei por ANDIS · Adorni "cero de más"</span>
+            </div>
+
+            <div class="card">
+                <div class="portada-titular">La pinza macro-micro: el Estado se privatiza y desregula para el capital transnacional mientras el salario real perfora el piso de 2023 y el bloque federal rompe la disciplina legislativa</div>
+                <div class="deck">El 20 de agosto de 2026 cristaliza la contradicción estructural del modelo libertario en su segundo año de gestión. Mientras el presidente Javier Milei diserta ante el establishment en el Council of the Americas y el Boletín Oficial publica la privatización ferroviaria por 50 años y la desregulación del mercado de capitales, la economía real documenta su fractura: el salario real cae por debajo de noviembre de 2023 y el 28,4% de los hogares endeudados acumula más de tres créditos activos para sostener el consumo básico. Esta tensión estalla en las calles con la marcha de la CGT al Ministerio de Economía y en el Congreso con la conformación del nuevo bloque federal de Passalacqua y Sáenz, que rompe la disciplina legislativa oficialista y entierra la eliminación de las PASO. Simultáneamente, la narrativa anticasta se desmorona por ambos flancos: desde un hospital en Bolivia, Nadia Beller vincula a Karina Milei con la filtración de los audios de la ANDIS, y en Comodoro Py, el contador Francisco Adorni atribuye a un "cero de más" una inconsistencia patrimonial de 70 millones de pesos.</div>
+            </div>
+
+            <div class="card">
+                <span class="section-label">Noticias del día</span>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-max">Máxima</span>
+                        <span class="news-title">El colapso microeconómico: el salario real perfora el piso de 2023 y la deuda de subsistencia lleva a la CGT a las calles</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El Instituto Nacional de Estadística y Censos (INDEC) publicó hoy el Índice de Salarios correspondiente a junio de 2026, confirmando un retroceso estructural profundo en la capacidad de compra de los trabajadores argentinos. El salario medio real de la economía experimentó una caída del 0,6% mensual, ubicándose por debajo del nivel registrado en noviembre de 2023. Este guarismo reviste una gravedad particular: rompe una racha de 20 meses consecutivos en los que el salario real había logrado mantenerse por encima de aquel umbral, evidenciando que la desaceleración inflacionaria no se traduce en una recuperación del poder adquisitivo, sino que es acompañada por un enfriamiento severo del mercado laboral formal y una caída drástica en el ritmo de actualizaciones paritarias. La pérdida de empleos registrados y la licuación de los ingresos empujan a los hogares hacia mecanismos de financiamiento que ya no responden a lógicas de inversión o consumo durable, sino a la mera subsistencia alimentaria. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: INDEC, Infomedia24, Perfil</p>
+                        <p>Esta erosión del poder adquisitivo se refleja de forma palmaria en los datos de endeudamiento familiar. Informes recientes del Instituto de Estudios sobre la Realidad Económica (IETSE) indican que, a agosto de 2026, el 28,4% de las familias endeudadas acumula más de tres deudas activas simultáneas, frente al 23,5% registrado en marzo y el 12% de mayo del año anterior. El uso del crédito para sostener consumos básicos ha crecido exponencialmente desde el inicio de la gestión, configurando una crisis silenciosa de sobreendeudamiento donde las tarjetas de crédito, los préstamos de billeteras virtuales y el endeudamiento informal se utilizan para cubrir la canasta básica. La modificación en la matriz de consumo es absoluta: los consumidores han abandonado la compra por volumen para transicionar hacia compras transaccionales de supervivencia basadas en montos fijos, sustituyendo forzosamente la proteína vacuna por alternativas de menor costo. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Tiempo Sur, Puntal, Noticias Argentinas, LMDiario</p>
+                        <p>Como correlato territorial de esta asfixia financiera, la Confederación General del Trabajo (CGT), en una inédita convergencia táctica con las dos ramas de la CTA y la UTEP, moviliza hoy a las 13:00 horas frente a las puertas del Ministerio de Economía. La consigna central de la movilización es el repudio al "endeudamiento de las familias" y el cierre de pymes, marcando el retorno del sindicalismo organizado a la confrontación directa en las calles porteñas. Las centrales sindicales exigen la intervención del Estado para regular las tasas usurarias de las plataformas financieras, denunciando que la deuda ya no es un instrumento de progreso sino un mecanismo de extracción de rentas sobre la pobreza. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Infobae, TN, Página 12, Canal Abierto, Mundo Gremial</p>
+                        <p>La cobertura mediática de este colapso microeconómico revela una asimetría estructural entre los grupos editoriales. El Grupo A — Infobae, La Nación, Clarín — cubre la movilización de la CGT con foco en el "impacto en el tránsito" y la "tensión política", enfatizando la dimensión de conflictividad y omitiendo sistemáticamente los datos del INDEC sobre la caída del salario real por debajo de 2023. El Grupo B — Página 12, El Destape, Canal Abierto — cubre la marcha con foco en la "asfixia salarial" y el "endeudamiento de subsistencia", enfatizando los datos del IETSE y la pérdida de poder adquisitivo. La diferencia no es de tono sino de selección: el Grupo A elige mostrar la protesta como un problema de orden público y gobernabilidad; el Grupo B elige mostrarla como la consecuencia inevitable de la política económica. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                        <p>La omisión más significativa en la cobertura del Grupo A es la conexión entre la caída del salario real y el sobreendeudamiento: ninguno de los medios hegemónicos vincula el dato del INDEC con el dato del IETSE para explicar por qué la CGT marcha hoy. El Grupo B, por su parte, omitió el detalle de la pérdida de 290.000 puestos registrados que menciona el informe del IETSE, enfocándose en la deuda y descuidando la destrucción del empleo formal que subyace a la crisis de ingresos. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                        <p>La lógica de esta cobertura se explica por los intereses verificables de cada grupo. El Grupo A cubre la marcha como un problema de orden porque vincularla con el colapso del salario real contradice la narrativa de "recuperación económica" y "sinceramiento" que el grupo sostiene y que beneficia a sus anunciantes del sector financiero. El Grupo B cubre la asfixia salarial con énfasis porque su audiencia es el sector popular afectado por el ajuste y su línea editorial es crítica del modelo extractivo de rentas financieras. <span class="verification-tag">[Hipótesis analítica]</span> Fuentes: análisis de propiedad mediática; cobertura cruzada</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-max">Máxima</span>
+                        <span class="news-title">El cisma federal: Passalacqua rompe con Rovira y el nuevo bloque Misiones-Salta entierra la eliminación de las PASO</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El mapa del poder legislativo en el Congreso de la Nación está sufriendo un reacomodamiento sísmico de cara a las inminentes negociaciones por el Presupuesto 2027. El eje central de este movimiento estratégico es la disolución formal de la bancada "Innovación Federal" y la creación de un nuevo bloque regional con una fuerte impronta transaccional, comandado directamente por los ejecutivos provinciales de Misiones y Salta. Para comprender la magnitud de este reordenamiento, resulta indispensable analizar el cisma histórico que se operó en la provincia de Misiones a principios de agosto. El actual gobernador, Hugo Passalacqua, formalizó su ruptura política e institucional definitiva con Carlos Rovira, el líder histórico y fundador del Frente Renovador de la Concordia, quien ejerció un dominio hegemónico sobre la provincia durante las últimas dos décadas. Passalacqua oficializó su salida al presentar su renuncia formal a la afiliación del partido "Encuentro Misionero" ante la Justicia Electoral, consolidando un nuevo espacio de poder territorial y aglutinando a más de 30 intendentes y un bloque propio de 17 legisladores provinciales. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Misiones Online, Letra P, Perfil, Infobae, Agencia Hoy</p>
+                        <p>Esta crisis de liderazgo local se replicó instantáneamente a nivel nacional y se materializará el próximo miércoles 26 de agosto con la oficialización de un nuevo bloque en la Cámara de Diputados de la Nación. Este espacio estará integrado por siete representantes que responderán de manera directa a los gobernadores Passalacqua y Gustavo Sáenz (Salta). La bancada estará conformada por los misioneros Oscar Herrera Ahuad (quien asumirá la presidencia del bloque), Alberto Arrúa, Yamila Ruiz y Daniel Vancsik; y los salteños Bernardo Biella, Pablo Outes y Yolanda Vega. En una demostración de depuración ideológica, se ha decidido excluir de este armado a diputados de otras provincias, argumentando que el nuevo bloque se enfocará exclusivamente en imponer una agenda federal y regional, negociando "ley por ley" desde una posición de fuerza. Entre las primeras exigencias innegociables del mandatario misionero se encuentra la derogación de los capítulos del DNU 70/2023 que desregularon la producción de la yerba mate. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Urgente24, Contexto Tucumán, Infobae, Voces Críticas, Grupo33 Misiones</p>
+                        <p>La creciente debilidad parlamentaria del gobierno nacional ha tenido su primer correlato inmediato en la paralización total de la agenda de reforma electoral. El ministro del Interior, Diego Santilli, ha intentado promover un proyecto para la eliminación de las PASO, presentándolo ante los gobernadores como un imperativo de austeridad fiscal de cara a 2027. Sin embargo, la disolución de Innovación Federal y el empoderamiento autónomo de los gobernadores han bloqueado esta iniciativa de raíz. Ante la inminencia de un nuevo fracaso parlamentario, la Casa Rosada ha tomado la decisión de abortar temporalmente el proyecto, asumiendo una severa pérdida de iniciativa política. Esta es una hipótesis analítica: la fractura del rovirismo y la consolidación del bloque Passalacqua-Sáenz obligará al gobierno a ceder recursos y negociar "ley por ley", un escenario que encarecerá drásticamente el costo político de cualquier iniciativa futura y le otorga al peronismo y a los bloques provinciales un poder de veto de facto en el Senado y Diputados. <span class="verification-tag">[Hipótesis analítica]</span> Fuentes: Urgente24, Contexto Tucumán, Infobae</p>
+                        <p>La cobertura mediática de este cisma federal revela una asimetría estructural entre los grupos editoriales. El Grupo A — Infobae, La Nación — cubre la ruptura con foco en la "crisis de gobernabilidad" y la "pérdida de votos para Milei", enfatizando la dificultad del Ejecutivo para aprobar leyes y omitiendo las demandas históricas de las provincias frente al centralismo. El Grupo B — Página 12, Letra P — cubre el cisma con foco en la "resistencia federal" y el "fin de la hegemonía rovirista", enfatizando la autonomía de los gobernadores frente al ajuste centralista. La diferencia no es de tono sino de selección: el Grupo A elige mostrar el hecho como un problema de ingobernabilidad para el oficialismo; el Grupo B elige mostrarlo como una reafirmación del poder territorial frente a la Casa Rosada. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-alta">Alta</span>
+                        <span class="news-title">La crisis de la narrativa anticasta: Beller vincula a Karina Milei con la ANDIS y Adorni atribuye a un "cero de más" su patrimonio</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El ecosistema gubernamental continúa asimilando las ondas expansivas de dos escándalos que han socavado severamente uno de los pilares retóricos de la administración: la transparencia y la erradicación de los privilegios de la "casta". Desde la cama de una clínica en Bolivia, Nadia Beller, expareja del consultor político Fernando Cerimedo (detenido por tentativa de femicidio), desató un huracán mediático y judicial al abrir una caja de Pandora sobre esquemas de corrupción. Beller declaró que Cerimedo le confesó que la Secretaria General de la Presidencia, Karina Milei, "estaba involucrada con la corrupción" y que el entorno de Javier Milei estaba "demasiado podrido". En una derivación de altísima sensibilidad, Beller afirmó que Cerimedo y su esposa, Natalia Basil, operaron activamente para filtrar a los medios las grabaciones encubiertas sobre supuestas coimas en la Agencia Nacional de Discapacidad (ANDIS) como un mecanismo de chantaje político. La fiscalía boliviana ya inició una segunda investigación por enriquecimiento ilícito, y la justicia federal argentina se prepara para solicitar el testimonio de Beller, amenazando con arrastrar la crisis institucional boliviana hacia los pasillos de la Casa Rosada. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: La Nación, Telefe, Red 92, LU17</p>
+                        <p>Simultáneamente, la pesquisa liderada por el fiscal Guillermo Marijuán sobre el patrimonio de Francisco Adorni, hermano del exvocero presidencial y actual diputado provincial, introdujo un componente de insostenibilidad técnica en la defensa de la familia. El legislador, que es contador público nacional egresado de la Universidad Nacional de La Plata con más de dos décadas de trayectoria en la administración pública, se presentó de manera espontánea ante el juez Daniel Rafecas para evitar una citación a indagatoria. Adorni intentó justificar una inconsistencia patrimonial de 70 millones de pesos como un mero "error de carga", argumentando que al ingresar una deuda inicial anotó un "cero de más", registrando pasivos por 130 millones de pesos cuando, según su versión, correspondían a 13 millones. La fiscalía y los peritos contables desestimaron de plano esta justificación, señalando que la declaración jurada mostraba un saldo de cierre matemáticamente incompatible con una deuda real inicial de 13 millones. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Página 12, diputadosbsas, Infoplatense, Letra P, 0221, La Nación</p>
+                        <p>El Grupo A encuadra la defensa de Adorni como un "error administrativo" y minimiza las declaraciones de Beller como "ficción política boliviana", enfatizando la falta de pruebas judiciales en Argentina y omitiendo la formación técnica de Adorni que invalida la excusa del "cero de más". El Grupo B enfatiza la "insólita explicación" de Adorni y la "caja de Pandora" de Beller — y esa asimetría revela la destrucción de la narrativa anticasta por ambos flancos: el geopolítico y el doméstico. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-alta">Alta</span>
+                        <span class="news-title">La arquitectura corporativa: Belgrano Cargas por 50 años y la desregulación del mercado de capitales</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El 20 de agosto de 2026 quedará marcado en el calendario económico como el inicio de una de las reformas estructurales de infraestructura más ambiciosas del programa del Ministerio de Economía. A través de la Resolución 1350/2026, publicada hoy en el Boletín Oficial, el gobierno nacional oficializó la convocatoria a una licitación pública nacional e internacional para concesionar, por un período de 50 años, la operación y mantenimiento de las líneas ferroviarias General Belgrano, General San Martín y General Urquiza. El esquema propuesto combina exigencias de inversión de capital bajo el andamiaje del RIGI con un modelo logístico de acceso abierto, e incluye cláusulas que limitan la participación de empresas controladas por el Estado chino, alineando la infraestructura logística con los intereses geopolíticos de Washington. <span class="verification-tag tag-confianza-alta">[Tier 1]</span> Fuente: Boletín Oficial, Resolución 1350/2026</p>
+                        <p>En paralelo, la Comisión Nacional de Valores (CNV) avanzó en un proceso de desregulación profunda mediante la Resolución 1162/2026, también publicada hoy. La reforma modificó de manera integral el régimen de transparencia de los participantes del mercado de capitales, actualizando el sistema de divulgación de "Hechos Relevantes" y eliminando cargas administrativas para otorgar mayor eficiencia a los inversores institucionales. Estas decisiones se anuncian el mismo día en que el presidente Milei diserta en el Council of the Americas frente a la cúpula empresarial, buscando mostrar que la economía empieza a dar resultados y validando el alineamiento incondicional con el capital transnacional. <span class="verification-tag tag-confianza-alta">[Tier 1]</span> Fuente: Boletín Oficial, CNV Resolución 1162/2026 · <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Ámbito, Letra P, Página 12</p>
+                        <p>El Grupo A encuadra estas resoluciones como "modernización logística" y "seguridad jurídica para la inversión", enfatizando los beneficios del RIGI y omitiendo la cláusula anti-China y la entrega de soberanía ferroviaria por medio siglo. El Grupo B enfatiza la "privatización con cláusulas geopolíticas" y la "financierización" — y esa asimetría revela la reconfiguración del Estado para garantizar la seguridad jurídica del capital que diserta hoy en el Hotel Alvear. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-media">Media</span>
+                        <span class="news-title">Las agendas paralelas: Villarruel con la UCR en Expo Venado y Karina Milei territorializa San Telmo</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>La fractura entre el presidente Javier Milei y la vicepresidenta Victoria Villarruel ha mutado a una ruptura institucional abierta. Lejos de ensayar una distensión, Villarruel desplegó una agenda política paralela al participar de la 90° edición de la Expo Venado en Santa Fe, donde compartió el acto central con el intendente local y presidente del comité nacional de la UCR, Leonel Chiarella. Villarruel emitió declaraciones que colisionan con el optimismo macroeconómico oficial, afirmando estar "sumamente preocupada por los argentinos que hoy no tienen trabajo" y llamando a la "unión nacional". Simultáneamente, la Secretaria General Karina Milei consolidó su control del aparato partidario al inaugurar la sede de LLA en San Telmo y presionar a aliados para eliminar las PASO con la mira en 2027, mientras recorre la CABA en plan opositor al PRO de Jorge Macri. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: La Nación, Border Periodismo, TN, Ámbito, El Día</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="card">
+                <span class="section-label">Inventario jerarquizado</span>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>Hecho</th><th>Nivel</th><th>Razón</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Salario real perfora 2023 + IETSE 28,4% + Marcha CGT</td><td>Máxima</td><td>Colapso microeconómico documentado por INDEC e IETSE traducido en conflictividad social.</td></tr>
+                            <tr><td>Cisma Misiones + Nuevo bloque Passalacqua-Sáenz</td><td>Máxima</td><td>Reconfigura el mapa legislativo federal y bloquea la eliminación de las PASO.</td></tr>
+                            <tr><td>Beller acusa a Karina Milei + Adorni "cero de más"</td><td>Alta</td><td>Destrucción de la narrativa anticasta por ambos flancos.</td></tr>
+                            <tr><td>Belgrano Cargas + CNV desregulación</td><td>Alta</td><td>Reestructuración estructural del Estado para el capital transnacional.</td></tr>
+                            <tr><td>Villarruel Expo Venado + Karina San Telmo</td><td>Media</td><td>Agendas paralelas y fractura interna.</td></tr>
+                            <tr><td>Consejo Salario 28/8 + DNU 88/2026 IOSFA + Mundial</td><td>Registro</td><td>Hechos institucionales y culturales verificados.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="section-label">Conexiones explícitas</span>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>Sección A</th><th>Sección B</th><th>Hilo</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Salario real/Deudas IETSE</td><td>Marcha CGT 13hs</td><td>El colapso microeconómico se traduce mecánicamente en conflictividad social masiva.</td></tr>
+                            <tr><td>Cisma Misiones/Bloque Passalacqua</td><td>Parálisis PASO/Ley Inocencia Fiscal</td><td>La ruptura de la disciplina legislativa le quita al Ejecutivo los votos automáticos.</td></tr>
+                            <tr><td>Beller/Karina Milei (ANDIS)</td><td>Adornigate "cero de más"</td><td>La narrativa anticasta colapsa por el flanco geopolítico y el judicial doméstico.</td></tr>
+                            <tr><td>Belgrano Cargas/CNV</td><td>Council of the Americas/Thiel</td><td>El Estado se reconfigura normativamente para garantizar la seguridad jurídica del capital transnacional.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="economia">
+            <div class="card">
+                <span class="section-label">Tablero financiero · 20/8/2026</span>
+                <div class="tablero-grid">
+                    <div class="indicador"><span class="nombre">Dólar Oficial</span><span class="valor">$1.465/$1.515</span></div>
+                    <div class="indicador"><span class="nombre">Dólar Blue</span><span class="valor">$1.540/$1.560</span></div>
+                    <div class="indicador"><span class="nombre">Riesgo País</span><span class="valor">517 pb</span></div>
+                    <div class="indicador"><span class="nombre">Salario Real (Junio)</span><span class="valor">-0,6%</span></div>
+                    <div class="indicador"><span class="nombre">Superávit fiscal julio</span><span class="valor">$244.897M</span></div>
+                    <div class="indicador"><span class="nombre">IETSE 3+ deudas</span><span class="valor">28,4%</span></div>
+                </div>
+                <canvas id="riesgoPaisChart" width="400" height="120" style="max-height:130px;width:100%;"></canvas>
+            </div>
+        </div>
+
+        <div class="tab-content" id="agenda">
+            <div class="card">
+                <span class="section-label">Agenda crítica</span>
+                <div class="agenda-item"><strong>20/8:</strong> Marcha CGT/CTA/UTEP al Ministerio de Economía (13hs) <span style="color:var(--accent-2);">MÁXIMA</span></div>
+                <div class="agenda-item"><strong>20/8:</strong> Milei cierra el Council of the Americas (12:30hs) <span style="color:var(--accent-4);">ALTA</span></div>
+                <div class="agenda-item"><strong>21/8:</strong> Milei recibe a Daniel Noboa (Ecuador) <span style="color:var(--accent-3);">MEDIA</span></div>
+                <div class="agenda-item"><strong>24/8:</strong> Clínicas patagónicas cortan PAMI <span style="color:var(--accent-4);">ALTA</span></div>
+                <div class="agenda-item"><strong>26/8:</strong> Oficialización nuevo bloque Passalacqua-Sáenz <span style="color:var(--accent-2);">MÁXIMA</span></div>
+                <div class="agenda-item"><strong>26/8:</strong> Mega sesión Diputados <span style="color:var(--accent-4);">ALTA</span></div>
+                <div class="agenda-item"><strong>28/8:</strong> Consejo del Salario Mínimo <span style="color:var(--accent-4);">ALTA</span></div>
+            </div>
+            <div class="card">
+                <span class="section-label">Mapa de poder · Próximas 72 hs</span>
+                <div class="mapa-poder">
+                    <p><strong>Quién tiene el poder:</strong> Passalacqua y Sáenz (bloque federal), Karina Milei (aparato), Héctor Daer (CGT).</p>
+                    <p><strong>Quién lo pierde:</strong> Carlos Rovira, Francisco Adorni, Diego Santilli.</p>
+                    <p><strong>Hilos activos:</strong> Colapso microeconómico, Reconfiguración del bloque federal, Crisis de la narrativa anticasta.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="informe">
+            <div class="card">
+                <span class="section-label">Metareporte</span>
+                <p>Búsquedas web_search en cuatro rondas (20/8/2026 mañana): Resolución 1350/2026, CNV 1162/2026, Consejo Salario 28/8, Salario real junio 2026, IETSE endeudamiento, Beller Karina Milei ANDIS, Passalacqua Rovira, Nuevo bloque Sáenz Passalacqua, Villarruel Expo Venado, Karina sede San Telmo, Adornigate, Francisco Adorni contador UNLP, DNU 88/2026 IOSFA.</p>
+                <p><strong>Hallazgos propios:</strong> Verificación directa Resolución 1162/2026 CNV. Verificación directa Consejo del Salario 28/8. Verificación directa salario real INDEC junio 2026.</p>
+                <p><strong>Hallazgos de Gemini:</strong> 46 hechos nuevos aportados (15 verificados como Tier 1/2, 31 como Tier 3).</p>
+                <p><strong>Fallo de fuentes:</strong> No acceso directo al texto completo de la Resolución 1350/2026 ni de la Resolución 1162/2026 (solo snippets). No verificación directa de la declaración de Feinmann.</p>
+            </div>
+            <div class="card">
+                <span class="section-label">Autochequeo</span>
+                <div class="chequeo-item">[✅] Análisis cruzado integrado en MÁXIMA y ALTA.</div>
+                <div class="chequeo-item">[❌] Tier 1 de publicación pero Tier 2 de contenido analítico en Resoluciones 1350/2026 y 1162/2026.</div>
+                <div class="chequeo-item">[✅] Sin anacronismos.</div>
+                <div class="chequeo-item">[✅] Vocabulario prohibido ausente.</div>
+            </div>
+            <div class="card">
+                <span class="section-label">Cierre informativo</span>
+                <p>Búsqueda de última hora no disponible. No se pueden verificar novedades posteriores al corte del 20/8 09:45 hs.</p>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <div class="card">
+                <span class="section-label">Radar de riesgos</span>
+                <div class="riesgo-nivel"><span class="riesgo-max">Máxima</span> <span>Marcha CGT/CTA/UTEP hoy 13hs</span></div>
+                <div class="riesgo-nivel"><span class="riesgo-max">Máxima</span> <span>Cisma federal Passalacqua-Sáenz</span></div>
+                <div class="riesgo-nivel"><span class="riesgo-crit">Crítico</span> <span>Beller acusa a Karina Milei</span></div>
+                <div class="riesgo-nivel"><span class="riesgo-crit">Crítico</span> <span>Adorni "cero de más" ante Rafecas</span></div>
+                <div class="riesgo-nivel"><span style="color:var(--accent-4);">Alto</span> <span>Belgrano Cargas + CNV desregulación</span></div>
+            </div>
+            <div class="card">
+                <span class="section-label">Confiabilidad</span>
+                <p><span class="badge-tier">■■■</span> Alta (Boletín Oficial, INDEC)<br>
+                <span class="badge-tier">■■□</span> Media (Clarín, Página 12, Letra P)<br>
+                <span class="badge-tier">■□□</span> Baja (trascendidos, Gemini no verificado)</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        ForestaleNews · Sistema de Inteligencia Informativa · v5.9 · Jueves 20 de agosto de 2026 · Edición AM
+    </footer>
+
+    <script>
+        const progressBar = document.getElementById('readingProgress');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            progressBar.style.width = (scrollTop / docHeight) * 100 + '%';
+        });
+
+        const themeBtn = document.getElementById('toggleTheme');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            themeBtn.textContent = document.body.classList.contains('dark') ? '☀' : '🌙';
+        });
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        const ctx = document.getElementById('riesgoPaisChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['21/7','25/7','30/7','4/8','9/8','14/8','17/8','19/8'],
+                datasets: [{
+                    label: 'Riesgo País (pb)',
+                    data: [425,440,455,465,478,492,500,517],
+                    borderColor: '#c07872',
+                    backgroundColor: 'rgba(192,120,114,0.04)',
+                    borderWidth: 1.5,
+                    pointBackgroundColor: '#7a9fc0',
+                    pointBorderColor: '#1f2126',
+                    tension: 0.25,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: false, min: 400, grid: { color: '#3a3d42' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
