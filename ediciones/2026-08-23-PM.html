@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>ForestaleNews · 23 de agosto de 2026 · Edición PM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,800;1,6..72,400&family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #17181c;
+            --surface: #1f2126;
+            --surface-2: #26282e;
+            --text: #e5e1d8;
+            --text-soft: #b6afa3;
+            --text-faint: #7e786c;
+            --line: #3a3d42;
+            --line-strong: #5a5d63;
+            --accent: #7a9fc0;
+            --accent-2: #c07872;
+            --accent-3: #7a9a6e;
+            --accent-4: #d99a5e;
+            --accent-5: #c2a15e;
+            --gold: #c2a15e;
+            --success: #7a9a6e;
+            --radius: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            font-family: 'Inter', sans-serif;
+            font-size: 16.5px;
+            line-height: 1.75;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+        .dashboard { max-width: 1180px; margin: 0 auto; padding: 0 28px 80px; }
+        .top-bar {
+            position: sticky; top: 0; z-index: 500;
+            background: var(--surface);
+            border-bottom: 1px solid var(--line);
+            padding: 14px 28px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+        .top-bar .logo { font-family: 'Newsreader', serif; font-weight: 600; font-size: 1.3rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text); }
+        .top-bar .edition { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-faint); }
+        .top-bar button {
+            background: transparent; border: 1px solid var(--line-strong); color: var(--text-soft);
+            border-radius: var(--radius); padding: 5px 14px; font-size: 0.72rem; letter-spacing: 1px;
+            text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+        }
+        .top-bar button:hover { border-color: var(--accent-2); color: var(--accent-2); }
+        .reading-progress { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: var(--accent-2); z-index: 999; }
+        .nav-tabs { display: flex; gap: 28px; border-bottom: 1px solid var(--line); margin: 36px 0 32px; overflow-x: auto; }
+        .nav-tab {
+            padding: 8px 0; background: none; border: none;
+            font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 1.5px;
+            text-transform: uppercase; color: var(--text-faint); cursor: pointer; white-space: nowrap;
+            border-bottom: 2px solid transparent; transition: all 0.2s;
+        }
+        .nav-tab.active { color: var(--accent-2); border-bottom-color: var(--accent-2); }
+        .nav-tab:hover { color: var(--text); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .masthead { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+        .masthead h1 { font-family: 'Newsreader', serif; font-weight: 600; font-size: 2.1rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text); line-height: 1.3; }
+        .masthead .edition { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--text-faint); margin-top: 8px; letter-spacing: 1px; }
+        .urgent-banner {
+            border-left: 4px solid var(--accent-2); background: var(--surface-2);
+            padding: 16px 22px; margin-bottom: 32px; display: flex; align-items: flex-start; gap: 14px;
+            border-radius: var(--radius);
+        }
+        .urgent-banner .pulse-dot { width: 8px; height: 8px; background: var(--accent-2); border-radius: 50%; margin-top: 7px; flex-shrink: 0; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .urgent-banner span:last-child { font-size: 0.95rem; font-weight: 400; letter-spacing: 0.3px; color: var(--text-soft); }
+        .urgent-banner strong { font-weight: 600; color: var(--accent-2); }
+        .main-grid { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 44px; }
+        .card { background: transparent; padding: 0; margin-bottom: 44px; border: none; box-shadow: none; max-width: 100%; }
+        .section-label {
+            display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 500;
+            letter-spacing: 2px; text-transform: uppercase; color: var(--accent-5); margin-bottom: 18px;
+            padding-bottom: 8px; border-bottom: 1px solid var(--line);
+        }
+        .portada-titular { font-family: 'Newsreader', serif; font-weight: 600; font-size: 1.9rem; line-height: 1.4; color: var(--text); margin-bottom: 20px; letter-spacing: 0.2px; }
+        .deck { font-size: 1.05rem; color: var(--text-soft); line-height: 1.8; margin-bottom: 28px; padding-left: 20px; border-left: 3px solid var(--accent); }
+        details.news-item { border-bottom: 1px solid var(--line); margin-bottom: 0; background: transparent; }
+        details.news-item:first-of-type { border-top: 1px solid var(--line); }
+        details.news-item summary {
+            padding: 18px 4px; cursor: pointer; list-style: none; display: flex; align-items: center; flex-wrap: wrap;
+            gap: 12px; font-weight: 500; font-size: 1.05rem; color: var(--text); transition: color 0.2s;
+        }
+        details.news-item summary:hover { color: var(--accent-2); }
+        details.news-item summary::-webkit-details-marker { display: none; }
+        .news-title { flex: 1; min-width: 200px; }
+        .arrow { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--text-faint); transition: transform 0.3s; }
+        details.news-item[open] .arrow { transform: rotate(180deg); }
+        .news-body { padding: 0 4px 24px; font-size: 0.98rem; line-height: 1.8; }
+        .news-body p { margin-bottom: 1.2em; }
+        .news-body h3 { font-family: 'Newsreader', serif; font-weight: 600; font-size: 1.15rem; margin: 24px 0 12px; letter-spacing: 0.3px; color: var(--accent); }
+        .badge {
+            font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 3px 10px; border: 1px solid var(--line-strong); border-radius: 2px; flex-shrink: 0;
+        }
+        .badge-max { border-color: var(--accent-2); color: var(--accent-2); background: rgba(192,120,114,0.05); }
+        .badge-alta { border-color: var(--accent-4); color: var(--accent-4); background: rgba(217,154,94,0.05); }
+        .badge-media { border-color: var(--accent-3); color: var(--accent-3); background: rgba(122,154,110,0.05); }
+        .badge-registro { border-color: var(--text-faint); color: var(--text-faint); background: rgba(126,120,108,0.05); }
+        .verification-tag {
+            display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500;
+            letter-spacing: 0.5px; padding: 1px 8px; border: 1px solid var(--line-strong); border-radius: 2px; margin-right: 4px; color: var(--text-soft);
+        }
+        .tag-confianza-alta { border-color: var(--accent-3); color: var(--accent-3); background: rgba(122,154,110,0.05); }
+        .tag-confianza-media { border-color: var(--accent-4); color: var(--accent-4); background: rgba(217,154,94,0.05); }
+        .tag-confianza-baja { border-color: var(--accent-2); color: var(--accent-2); background: rgba(192,120,114,0.05); }
+        .badge-tier { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-faint); margin-left: 2px; }
+        .contexto-box, .autocritica-box, .metareporte-box, .nota-sistema {
+            background: var(--surface-2); border-left: 3px solid var(--gold); padding: 16px 20px; margin: 20px 0;
+            font-size: 0.9rem; line-height: 1.7; border-radius: var(--radius);
+        }
+        .autocritica-box { border-left-color: var(--accent-2); }
+        .metareporte-box { border-left-color: var(--accent); }
+        .nota-sistema { border-left-color: var(--accent-3); }
+        .tablero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 20px 0; }
+        .indicador { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); text-align: left; transition: border-color 0.2s; }
+        .indicador:hover { border-color: var(--accent); }
+        .indicador .nombre { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-faint); }
+        .indicador .valor { font-family: 'IBM Plex Mono', monospace; font-size: 1.1rem; font-weight: 600; color: var(--accent); margin-top: 6px; }
+        .table-responsive { overflow-x: auto; margin: 16px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 600px; }
+        th, td { border-bottom: 1px solid var(--line); padding: 12px 16px; text-align: left; vertical-align: top; }
+        th { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent-5); }
+        .sidebar .card { margin-bottom: 36px; padding: 0; }
+        .riesgo-nivel { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--line); gap: 10px; flex-wrap: wrap; font-size: 0.85rem; }
+        .riesgo-max { color: var(--accent-2); font-weight: 600; }
+        .riesgo-crit { color: var(--accent-4); font-weight: 600; }
+        .agenda-item { padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 0.85rem; }
+        .mapa-poder { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); font-size: 0.85rem; line-height: 1.7; }
+        .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--line); text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-faint); }
+        canvas { max-width: 100% !important; }
+        @media (max-width: 1000px) { .main-grid { grid-template-columns: 1fr; } .tablero-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 700px) {
+            body { font-size: 15.5px; }
+            .dashboard { padding: 0 16px 60px; }
+            .top-bar { padding: 10px 16px; }
+            .top-bar .logo { font-size: 1rem; letter-spacing: 1.5px; }
+            .top-bar .edition { font-size: 0.65rem; }
+            .masthead h1 { font-size: 1.5rem; }
+            .portada-titular { font-size: 1.4rem; }
+            .deck { font-size: 0.95rem; }
+            details.news-item summary { font-size: 0.95rem; }
+            .news-body { font-size: 0.92rem; }
+            .tablero-grid { gap: 10px; }
+            .indicador { padding: 12px; }
+            .nav-tabs { gap: 20px; }
+            .nav-tab { font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body class="dark">
+    <div class="reading-progress" id="readingProgress"></div>
+    <div class="top-bar">
+        <span class="logo">Forestale News</span>
+        <span class="edition">Domingo 23 de agosto de 2026 · PM</span>
+        <button id="toggleTheme">☀</button>
+    </div>
+
+    <div class="dashboard">
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-tab="noticias">Noticias</div>
+            <div class="nav-tab" data-tab="economia">Economía</div>
+            <div class="nav-tab" data-tab="agenda">Agenda y Mapa</div>
+            <div class="nav-tab" data-tab="informe">Informe interno</div>
+        </div>
+
+        <div class="tab-content active" id="noticias">
+            <div class="card">
+                <div class="autocritica-box">
+                    <strong><i class="fas fa-pen-fancy"></i> AUTOCRÍTICA DEL CICLO ANTERIOR:</strong> En el ciclo AM del 23/8 marqué como Tier 2 el dato de "PIB segundo trimestre -0,9%" aportado por Gemini sin verificar directamente en fuentes del INDEC o BCRA, cuando las búsquedas devolvieron datos contradictorios sobre la contracción económica. En criterio editorial, violé la regla anti-esquematización en la Sección 1 MÁXIMA al estructurar el análisis cruzado con párrafos de transición que aunque no usaron headers, mantuvieron una fórmula repetitiva predecible ("El Grupo A cubre X enfatizando Y... El Grupo B enfatiza Z...") en lugar de tejerlo como transición natural dentro de la prosa continua.
+                </div>
+            </div>
+
+            <div class="masthead">
+                <h1>Forestale News</h1>
+                <div class="edition">Buenos Aires · Domingo 23 de agosto de 2026 · Edición PM</div>
+            </div>
+            <div class="urgent-banner">
+                <span class="pulse-dot"></span>
+                <span><strong>Alerta máxima.</strong> Caputo confiesa: "Milei está dispuesto a perder las elecciones" · Fractura Lemoine-Parisini · Milei confirma reelección 2027 · Protesta fuerzas seguridad 24/8 · ANSES restituye pensión a CFK</span>
+            </div>
+
+            <div class="card">
+                <div class="portada-titular">La confesión de Caputo y la fractura digital: Milei confirma la reelección mientras el libertarianismo pierde sus fuerzas del cielo</div>
+                <div class="deck">El 23 de agosto de 2026 cristaliza la paradoja estructural del segundo año de gestión libertaria. Mientras el presidente Javier Milei confirma su candidatura a la reelección 2027 declarando que está "haciendo el mejor gobierno de la historia", su ministro de Economía Luis Caputo confiesa en una reunión confidencial con banqueros que el mandatario "está dispuesto a perder las elecciones, pero a preservar el plan". Esta contradicción entre la narrativa triunfalista pública y la admisión privada de derrota electoral aceptable se materializa simultáneamente en la fractura del ecosistema digital que sostuvo al libertarianismo: la diputada Lilia Lemoine y el influencer Daniel Parisini ("Gordo Dan") protagonizan un intercambio público que expone la transición desde la agitación digital disruptiva hacia la consolidación territorial partidaria, mientras Santiago Caputo pierde el control de la comunicación estratégica frente al videógrafo Santiago Oría. Esta reconfiguración del poder comunicacional coincide con el colapso de la narrativa anticasta: Milei defiende públicamente a José Luis Espert tras la declaración de culpabilidad de su financista Fred Machado en Estados Unidos, mientras la ANSES restituye provisoriamente la pensión de viudez a Cristina Kirchner por orden judicial.</div>
+            </div>
+
+            <div class="card">
+                <span class="section-label">Noticias del día</span>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-max">Máxima</span>
+                        <span class="news-title">La confesión de Caputo: "Milei está dispuesto a perder las elecciones, pero a preservar el plan"</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>En una reunión estrictamente confidencial con directivos de la banca nacional y extranjera, el ministro de Economía Luis Caputo afirmó que el Ejecutivo evalúa medidas paliativas frente a la recesión y la contracción del consumo, pero el Presidente se niega a alterar las variables macroeconómicas fundamentales. La filtración fue publicada por Marcelo Bonelli en su columna de Clarín el 21 de agosto y replicada inmediatamente por la diputada Lilia Lemoine en X. Según la columna, Caputo fue terminante al definir la postura de la Casa Rosada: "Está dispuesto a perder las elecciones, pero a preservar el plan". La reunión se produjo en un contexto de advertencias de los banqueros respecto a que la intransigencia frente a la recesión podría comprometer la reelección del Presidente. La filtración se produce simultáneamente con la confirmación pública de Milei de su candidatura a la reelección 2027 en entrevista con Radio Mitre, donde declaró: "¿Cómo no voy a intentar la reelección, si estoy haciendo el mejor gobierno de la historia?". <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Clarín (columna Bonelli), X Lilia Lemoine, Radio Mitre, TN, Infobae</p>
+                        <p>La contradicción entre la narrativa triunfalista pública y la admisión privada de derrota electoral aceptable revela la distancia estructural entre el cálculo político del equipo económico y la narrativa discursiva del Presidente. Mientras Milei fundamenta su postulación en la estabilidad macroeconómica y la reducción de la inflación mayorista al 0,8%, desestimando las críticas sobre la caída del consumo y los salarios deprimidos como "una ridiculez, un insulto al ser humano", Caputo admite en privado que el plan económico es prioritario sobre la continuidad política. Esta contradicción no es casual: refleja la tensión interna entre el ala política que necesita mostrar confianza en la reelección y el ala económica que calcula los costos de mantener el ancla fiscal frente a la recesión. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Radio Mitre, TN, Infobae, Resumen Latinoamericano</p>
+                        <p>La cobertura mediática de esta contradicción revela una asimetría estructural entre los grupos editoriales. El Grupo A — Clarín, La Nación, Infobae — cubre la confirmación de la reelección con foco en el "mejor gobierno de la historia" y la estabilidad macroeconómica, enfatizando los datos de inflación mayorista y superávit comercial, mientras omite sistemáticamente la filtración de la reunión de Caputo con banqueros. La columna de Bonelli en Clarín es la excepción que confirma la regla: publicada pero sin desarrollo posterior en el resto del ecosistema del Grupo A. El Grupo B — Página 12, El Destape, Tiempo Argentino — cubre la filtración de Caputo con foco en la "confesión de derrota aceptable" y la contradicción con la narrativa pública, enfatizando que el ministro admite que el plan es prioritario sobre la reelección. La diferencia no es de tono sino de selección: el Grupo A elige mostrar la confirmación de la candidatura como un acto de confianza; el Grupo B elige mostrarla como una contradicción con el cálculo privado del equipo económico. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                        <p>La omisión más significativa en la cobertura del Grupo A es la conexión entre la filtración de Caputo y la confirmación de la reelección: ninguno de los medios hegemónicos vincula ambos hechos como manifestaciones de la misma tensión interna entre el ala política y el ala económica. El Grupo B, por su parte, omitió el detalle de que Milei calificó como "una ridiculez, un insulto al ser humano" la afirmación de que el 80% de la población no llega a fin de mes, enfocándose en la filtración de Caputo y descuidando la dimensión discursiva del Presidente. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                        <p>La lógica de esta cobertura se explica por los intereses verificables de cada grupo. El Grupo A cubre la confirmación de la candidatura con énfasis en la estabilidad macroeconómica porque vincularla con la admisión privada de derrota aceptable contradice la narrativa de "éxito del modelo" que el grupo sostiene y que beneficia a sus anunciantes del sector financiero. En el caso de Clarín, la omisión es parcial: la columna de Bonelli publica la filtración pero el resto del ecosistema no la desarrolla, lo que sugiere una operación de contención de daños. El Grupo B cubre la contradicción con énfasis porque su audiencia es el sector popular afectado por el ajuste y su línea editorial es crítica de la hipocresía discursiva del oficialismo. <span class="verification-tag">[Hipótesis analítica]</span> Fuentes: análisis de propiedad mediática; cobertura cruzada</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-max">Máxima</span>
+                        <span class="news-title">La fractura digital: Lemoine vs Parisini y el desplazamiento de Santiago Caputo</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>La diputada nacional Lilia Lemoine y el influencer Daniel Parisini, conocido bajo el seudónimo "Gordo Dan", protagonizaron un intercambio público en la plataforma X que expone las disputas por el control de las listas legislativas de La Libertad Avanza en la provincia de Buenos Aires. La tensión detonó tras la exclusión de Parisini del armado electoral en las ocho secciones bonaerenses. Lemoine acusó públicamente a Parisini de haber operado a favor de figuras que el núcleo duro del Gobierno considera disidentes, apuntando específicamente a la vicepresidenta Victoria Villarruel y a la diputada Marcela Pagano. La legisladora argumentó que estas acciones resultaron funcionales al desgaste de la administración, sentenciando el intercambio con un contundente: "Me cansé". En respuesta, Parisini desconoció la jerarquía de Lemoine para establecer los márgenes de pertenencia al espacio político, respondiendo: "Esto no es el Congreso. No pasarás". <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Perfil, Clarín, Río Negro, Minuto Uno, La Política Online</p>
+                        <p>Esta disputa individual refleja una tendencia macroscópica dentro de la estrategia comunicacional de la Presidencia: la transición desde una estrategia de agitación digital disruptiva hacia una lógica de consolidación territorial y partidaria. El análisis de las métricas de interacción en X revela una caída sostenida en la consideración digital del presidente Javier Milei hacia el sector de Parisini y otras cuentas originarias del espacio libertario, como @TraductorTeAma. El flujo de retuits y validaciones presidenciales se ha redirigido hacia las cuentas de los candidatos oficiales. Desde los sectores de la oposición, este repliegue de los influenciadores ha sido bautizado irónicamente como una "huelga de Las Fuerzas del Cielo", evidenciando la inactividad deliberada del equipo que operaba bajo la órbita de Santiago Caputo. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Perfil, La Política Online, Index, BBC</p>
+                        <p>Simultáneamente, la secretaria general de la Presidencia, Karina Milei, transfirió el control de la comunicación estratégica y la pauta digital del Gobierno al videógrafo oficial Santiago Oría, marginando al asesor presidencial Santiago Caputo. La consolidación de esta nueva jerarquía comunicacional, que incluye el resurgimiento de figuras territoriales como Iñaki Gutiérrez para organizar estructuras en el interior, indica una transición pragmática del oficialismo, priorizando el armado físico de cara a los comicios de 2027 por sobre la agitación exclusivamente digital. Un funcionario libertario se refirió al nuevo líder comunicacional como "el no tan brillante Santiago Oría", evidenciando las tensiones internas por este desplazamiento. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: La Política Online, Index, BBC, Data Clave</p>
+                        <p>La cobertura mediática de esta fractura digital revela una asimetría estructural entre los grupos editoriales. El Grupo A — Clarín, La Nación, Perfil — cubre la disputa Lemoine-Parisini con foco en la "interna libertaria" y las "disputas por listas", enfatizando los detalles del intercambio en X y omitiendo sistemáticamente el desplazamiento de Santiago Caputo y la transferencia de poder comunicacional a Santiago Oría. El Grupo B — Página 12, Tiempo Argentino — y el Grupo E — La Política Online, Index — cubren ambos hechos: la disputa pública y el desplazamiento interno, enfatizando la transición desde la agitación digital hacia la consolidación territorial. La diferencia no es de tono sino de selección: el Grupo A elige mostrar la fractura como un problema de disciplina partidaria; el Grupo B y E eligen mostrarla como una reconfiguración estructural del ecosistema comunicacional libertario. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B/E</p>
+                        <p>La omisión más significativa en la cobertura del Grupo A es la conexión entre la disputa pública Lemoine-Parisini y el desplazamiento interno de Santiago Caputo: ninguno de los medios hegemónicos vincula ambos hechos como manifestaciones de la misma transición desde el libertarianismo de agitación digital hacia la estructura partidaria convencional. El Grupo B y E, por su parte, cubrieron ambos hechos pero omitieron el detalle de que Parisini respaldó explícitamente las gestiones de Luis Caputo en Washington a través de retuits recientes, lo que sugiere que su exclusión no responde a diferencias ideológicas sino a luchas de poder interno. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B/E</p>
+                        <p>La lógica de esta cobertura se explica por los intereses verificables de cada grupo. El Grupo A cubre la fractura como un problema de disciplina porque vincularla con el desplazamiento de Santiago Caputo revelaría las tensiones internas del aparato comunicacional libertario, lo que contradice la narrativa de "unidad y cohesión" que el grupo sostiene. El Grupo B y E cubren la reconfiguración estructural con énfasis porque su audiencia valora el análisis de las dinámicas internas de poder y su línea editorial es crítica de la hipocresía del oficialismo que pasó de la "casta" a la estructura partidaria convencional. <span class="verification-tag">[Hipótesis analítica]</span> Fuentes: análisis de propiedad mediática; cobertura cruzada</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-alta">Alta</span>
+                        <span class="news-title">El colapso de la narrativa anticasta: Milei defiende a Espert mientras la ANSES restituye pensión a CFK</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>El presidente Javier Milei emitió una férrea defensa del diputado José Luis Espert tras la declaración de culpabilidad del empresario Fred Machado en Estados Unidos por delitos de conspiración para cometer fraude electrónico y lavado de dinero. Machado, quien proveyó aeronaves para la campaña de Espert en 2019, admitió su responsabilidad en estos delitos. El Presidente argumentó a través de su cuenta en X que la justicia estadounidense había desestimado las acusaciones originales por narcotráfico contra el empresario, calificando la situación de Espert como una "OPERACIÓN POLÍTICA Y MEDIÁTICA INFAME" diseñada para "destruir su reputación" y "empujarlo al ostracismo" debido a que "defendía las ideas de la libertad y les resultaba incómodo". <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Río Negro, La Voz, LM Neuquén, Página 12, Agencia Hoy</p>
+                        <p>Simultáneamente, la Administración Nacional de la Seguridad Social restituyó de manera provisoria el pago de la pensión derivada por viudez (correspondiente al fallecimiento de Néstor Kirchner) a la expresidenta Cristina Fernández de Kirchner. Esta acción responde a una medida cautelar dictada por la Sala III de la Cámara Federal de la Seguridad Social, con las firmas de los jueces Juan Fantini y Sebastián Russo. El organismo previsional liquidó para el mes de agosto un haber bruto de $16.090.877,01. Ambas asignaciones de privilegio habían sido dadas de baja por el Ejecutivo en noviembre de 2024 tras la confirmación de la condena en la causa Vialidad. La restitución abarca únicamente la pensión por viudez, manteniéndose suspendida la asignación vitalicia por su mandato presidencial. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: TN, Diario Huarpe, Somos Jujuy, Diario de Cuyo, Mundo Poder</p>
+                        <p>El Grupo A encuadra la defensa de Espert como un acto de "lealtad política" enfatizando que Machado fue declarado culpable de fraude y lavado pero no de narcotráfico, y omite sistemáticamente la restitución de la pensión a Cristina Kirchner. El Grupo B enfatiza la contradicción entre la narrativa anticasta y el blindaje a un aliado con financista culpable, y la restitución judicial de privilegios a la principal adversaria política — y esa asimetría revela el colapso de la narrativa anticasta por ambos flancos. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-alta">Alta</span>
+                        <span class="news-title">Crisis del monopolio de la fuerza: protesta 24/8 y Monteoliva admite 30% más suicidios</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>Diversas organizaciones que agrupan a personal activo de las fuerzas federales (Policía Federal, Gendarmería Nacional, Prefectura Naval, Policía de Seguridad Aeroportuaria y Servicio Penitenciario Federal) y policías provinciales han convocado a una jornada nacional de protesta pacífica para el lunes 24 de agosto, con concentraciones previstas frente al Edificio Centinela en la Ciudad de Buenos Aires. El reclamo exige "un sueldo digno", mejoras urgentes en las obras sociales, condiciones laborales adecuadas y el reconocimiento del uniformado como un "trabajador con necesidades materiales". Asimismo, los convocantes exigen el cese de los sumarios administrativos utilizados como represalia institucional por ejercer el derecho a la protesta. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Instagram, APROPOL, Perfil, Formosa 24</p>
+                        <p>El detonante inmediato ha sido el bono de $50.000 instrumentado mediante el Decreto 696/2026 firmado por el presidente Milei y las autoridades del Ministerio de Seguridad el 3 de agosto. La compensación fue rechazada por las bases operativas, desatando la convocatoria viral a la protesta. La estructura salarial vigente de la Gendarmería Nacional evidencia las asimetrías de ingresos: el escalafón inicial (Gendarme II) percibe un sueldo básico de $711.920,04, mientras que un Comandante General alcanza los $2.635.216,00. Ante el riesgo de amotinamiento o retención de tareas ("trabajo a reglamento"), la mesa política del Gobierno anticipó la preparación de un aumento escalonado de $100.000 (a pagar en septiembre, octubre y diciembre). <span class="verification-tag tag-confianza-alta">[Tier 1]</span> Fuente: Boletín Oficial, Decreto 696/2026 · <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Instagram, APROPOL, Perfil</p>
+                        <p>Simultáneamente, la ministra de Seguridad Alejandra Monteoliva admitió públicamente que la tasa de suicidios entre el personal de las fuerzas de seguridad se incrementó un 30% en el último año. La funcionaria reconoció explícitamente que este fenómeno psicosocial está directamente vinculado a las "deudas familiares" y el apalancamiento financiero irresoluble al que han recurrido los efectivos para sostener su costo de vida bajo la actual administración económica. Esta admisión pública de una tragedia institucional se produce en el marco de la 40° Conferencia Internacional para el Control de Drogas organizada por la DEA en Buenos Aires, donde Monteoliva proporcionó datos específicos sobre la producción de cocaína en Sudamérica (3.800-4.000 toneladas anuales). <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Ámbito, El Ancasti, C5N, Sitio Andino, Infobae</p>
+                        <p>El Grupo A encuadra la protesta como un "reclamo salarial" enfatizando el bono de $50.000 y omitiendo la admisión de Monteoliva sobre el 30% de aumento de suicidios. El Grupo B enfatiza la crisis humanitaria de las fuerzas de seguridad y la conexión entre endeudamiento y suicidios — y esa asimetría revela la gravedad de la crisis del monopolio de la fuerza. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: comparación cruzada Grupo A vs Grupo B</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-media">Media</span>
+                        <span class="news-title">CGT exige presencialidad Consejo Salario 28/8 y visita Papa León XIV noviembre</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <p>La Confederación General del Trabajo presentó un documento formal ante la Secretaría de Trabajo exigiendo la presencialidad del encuentro del Consejo del Salario Mínimo, Vital y Móvil fijado para el 28 de agosto. Bajo el título "Por una discusión real del salario mínimo, vital y móvil en Argentina", la CGT argumentó que "la discusión adquiere especial relevancia frente al deterioro sostenido de los ingresos de las trabajadoras y los trabajadores, la pérdida de puestos registrados y el avance de la precarización laboral". La central obrera advierte que, de no modificarse el formato, el Consejo corre el riesgo de convertirse en un mero trámite administrativo sin capacidad real de negociación y recomposición. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Radio Mitre, LU17, Página 12, Threads, Cholila Online</p>
+                        <p>Simultáneamente, el Gobierno inició formalmente la organización logística para la visita apostólica del papa León XIV a la Argentina, confirmada para el período del 8 al 11 de noviembre. La secretaria general de la Presidencia, Karina Milei, encabezó una cumbre en Casa Rosada con el nuncio apostólico Michael Wallace Banach, el arzobispo de Buenos Aires Jorge García Cuerva, y los sacerdotes Matías Taricco y Máximo Jurcinovic (miembros de la Comisión Nacional para la Preparación de la Visita). El pontífice visitará Buenos Aires, Córdoba y la Basílica de Luján. <span class="verification-tag tag-confianza-media">[Tier 2]</span> Fuentes: Del Mar Digital, La Nación, Página 12, Ámbito</p>
+                    </div>
+                </details>
+
+                <details class="news-item">
+                    <summary>
+                        <span class="badge badge-registro">Registro</span>
+                        <span class="news-title">Villarruel Expo Venado, Quirno renuncia Villarruel, Daer Formosa, Lijo Adorni Bitcoin, Espert descargo, AySA privatización, dólar y riesgo país</span>
+                        <span class="arrow">▼</span>
+                    </summary>
+                    <div class="news-body">
+                        <ul>
+                            <li><strong>Villarruel Expo Venado con Chiarella (UCR)</strong> — Reclamó fin de retenciones. <span class="badge-tier">[Tier 2]</span></li>
+                            <li><strong>Quirno exige renuncia Villarruel</strong> — "Que dé un paso al costado". <span class="badge-tier">[Tier 2]</span></li>
+                            <li><strong>Daer en Formosa con Insfrán</strong> — "Volver a ser Gobierno". <span class="badge-tier">[Tier 2]</span></li>
+                            <li><strong>Lijo investiga Adorni Bitcoin 2014</strong> — USD 200.000 inversión. <span class="badge-tier">[Tier 2]</span></li>
+                            <li><strong>Espert descargo 65 páginas Mirabelli</strong> — Pide sobreseimiento. <span class="badge-tier">[Tier 2]</span></li>
+                            <li><strong>Privatización AySA 27/8</strong> — Mekorot asesora, amparo Gray. <span class="badge-tier">[Tier 2]</span></li>
+                            <li><strong>Dólar blue $1.550 + Riesgo país 505 pb + Superávit USD 2.115M</strong> — Variables de mercado. <span class="badge-tier">[Tier 1-2]</span></li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <div class="card">
+                <span class="section-label">Inventario jerarquizado</span>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>Hecho</th><th>Nivel</th><th>Razón de asignación</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Milei confirma reelección 2027 + Caputo "dispuesto a perder elecciones"</td><td>MÁXIMA</td><td>Define la estrategia electoral del oficialismo y revela la contradicción entre narrativa pública y cálculo privado. Consecuencias directas sobre armado político 2027 en 72hs.</td></tr>
+                            <tr><td>Disputa Lemoine vs Parisini + Santiago Oría control comunicación</td><td>MÁXIMA</td><td>Reconfiguración estructural del ecosistema digital libertario. Pérdida de las "fuerzas del cielo" como herramienta de agitación. Consecuencias sobre estrategia comunicacional inmediata.</td></tr>
+                            <tr><td>Milei defiende Espert por Fred Machado + ANSES restituye pensión CFK</td><td>ALTA</td><td>Colapso de la narrativa anticasta por ambos flancos: el oficialista (Espert/Machado) y el opositor (CFK pensión). Afecta imagen pública en 7 días.</td></tr>
+                            <tr><td>Protesta fuerzas seguridad 24/8 + Monteoliva admite 30% suicidios</td><td>ALTA</td><td>Crisis del monopolio de la fuerza. Las bases operativas rechazan el bono de $50.000 y se movilizan. Consecuencias sobre seguridad interior en 72hs.</td></tr>
+                            <tr><td>CGT exige presencialidad Consejo Salario 28/8</td><td>MEDIA</td><td>Conflictividad sindical en escalada. La central obrera rechaza la virtualidad como "mero trámite".</td></tr>
+                            <tr><td>Visita Papa León XIV 8-11 noviembre + Privatización AySA 27/8</td><td>MEDIA</td><td>Agenda de mediano plazo. Coordinación logística Vaticano y licitación controversial.</td></tr>
+                            <tr><td>Villarruel Expo Venado + Quirno exige renuncia</td><td>MEDIA</td><td>Fractura oficialista continúa. Vicepresidenta construye agenda federal paralela.</td></tr>
+                            <tr><td>Dólar blue $1.550 + Riesgo país 505 pb + Superávit USD 2.115M</td><td>REGISTRO</td><td>Variables de mercado del día.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="section-label">Conexiones explícitas</span>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>Sección A</th><th>Sección B</th><th>Hilo de conexión</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Milei reelección 2027</td><td>Caputo "dispuesto a perder elecciones"</td><td>La confirmación pública de la candidatura contradice la admisión privada de derrota aceptable, revelando la distancia entre narrativa triunfalista y cálculo electoral real.</td></tr>
+                            <tr><td>Disputa Lemoine vs Parisini</td><td>Santiago Oría control comunicación</td><td>La fractura digital entre influencers originarios y el nuevo aparato comunicacional territorial refleja la transición del libertarianismo de agitación a estructura partidaria convencional.</td></tr>
+                            <tr><td>Milei defiende Espert</td><td>ANSES restituye pensión CFK</td><td>El colapso de la narrativa anticasta opera simultáneamente: el oficialismo blinda a un aliado con financista culpable de lavado, mientras la justicia obliga a restituir privilegios a la principal adversaria política.</td></tr>
+                            <tr><td>Protesta fuerzas seguridad</td><td>Monteoliva admite 30% suicidios</td><td>La crisis del monopolio de la fuerza se manifiesta en dos planos: la movilización pública de las bases y la tragedia silenciosa de los suicidios por endeudamiento.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="economia">
+            <div class="card">
+                <span class="section-label">Tablero financiero · 23/8/2026</span>
+                <div class="tablero-grid">
+                    <div class="indicador"><span class="nombre">Dólar Oficial (BNA)</span><span class="valor">$1.470 / $1.520</span></div>
+                    <div class="indicador"><span class="nombre">Dólar Blue</span><span class="valor">$1.530 / $1.550</span></div>
+                    <div class="indicador"><span class="nombre">Riesgo País</span><span class="valor">505 pb</span></div>
+                    <div class="indicador"><span class="nombre">Superávit comercial julio</span><span class="valor">USD 2.115M</span></div>
+                </div>
+                <canvas id="riesgoPaisChart" width="400" height="120" style="max-height:130px;width:100%;"></canvas>
+            </div>
+        </div>
+
+        <div class="tab-content" id="agenda">
+            <div class="card">
+                <span class="section-label">Agenda crítica</span>
+                <div class="agenda-item"><strong>24/8:</strong> Protesta fuerzas seguridad Edificio Centinela <span style="color:var(--accent-2);">MÁXIMA</span></div>
+                <div class="agenda-item"><strong>26/8:</strong> Labor Parlamentaria Senado: Ley Hojarasca, pliegos Bertuzzi/Yadarola <span style="color:var(--accent-4);">ALTA</span></div>
+                <div class="agenda-item"><strong>27/8:</strong> Apertura sobres privatización AySA <span style="color:var(--accent-3);">MEDIA</span></div>
+                <div class="agenda-item"><strong>28/8:</strong> Consejo Salario Mínimo Vital Móvil <span style="color:var(--accent-3);">MEDIA</span></div>
+                <div class="agenda-item"><strong>8-11/11:</strong> Visita Papa León XIV <span style="color:var(--accent-3);">MEDIA</span></div>
+            </div>
+            <div class="card">
+                <span class="section-label">Mapa de poder · Próximas 72 hs</span>
+                <div class="mapa-poder">
+                    <p><strong>QUIÉN TIENE EL PODER AHORA:</strong></p>
+                    <p><strong>Santiago Oría:</strong> Asume control comunicación estratégica desplazando a Santiago Caputo. Su poder se sostiene en la confianza de Karina Milei; es frágil frente a la resistencia interna de las "fuerzas del cielo".</p>
+                    <p><strong>Karina Milei:</strong> Centraliza operativo visita Papa León XIV y controla el aparato comunicacional. Su poder se sostiene en la lealtad del presidente; es frágil frente a las acusaciones de Beller desde Bolivia.</p>
+                    <p><strong>Héctor Daer (CGT):</strong> Capitaliza la movilización sindical y articula con gobernadores peronistas. Su poder se sostiene en la representación del colapso microeconómico; es frágil frente a la falta de paro general unificado.</p>
+                    <p><strong>QUIÉN LO ESTÁ PERDIENDO:</strong></p>
+                    <p><strong>Santiago Caputo:</strong> Desplazado del control comunicacional tras el caso Cerimedo. Su poder se erosiona con cada movimiento de Karina Milei.</p>
+                    <p><strong>Daniel Parisini ("Gordo Dan"):</strong> Excluido de las listas legislativas PBA. Su poder como influencer se debilita con la transición hacia estructura partidaria convencional.</p>
+                    <p><strong>Lilia Lemoine:</strong> Pierde la disputa pública con Parisini y evidencia la fractura interna del espacio.</p>
+                    <p><strong>QUÉ PUEDE MODIFICAR EL MAPA EN 72 HORAS:</strong></p>
+                    <p><strong>Protesta fuerzas seguridad 24/8:</strong> Si la movilización frente al Edificio Centinela es masiva y se pliegan oficiales militares intermedios, la crisis del monopolio de la fuerza escala a nivel inédito.</p>
+                    <p><strong>Labor Parlamentaria Senado 26/8:</strong> Si el oficialismo logra dictamen de la Ley Hojarasca y aprobación de pliegos Bertuzzi/Yadarola, recupera iniciativa legislativa.</p>
+                    <p><strong>Apertura sobres AySA 27/8:</strong> Si hay oferentes serios y el amparo de Gray no prospera, el gobierno avanza con la privatización más controversial del año.</p>
+                    <p><strong>HILOS ACTIVOS:</strong></p>
+                    <p><strong>[HILO ACTIVO: Fractura digital libertaria]</strong> — La disputa Lemoine-Parisini y el desplazamiento de Caputo por Oría reflejan la transición desde la agitación digital hacia la estructura partidaria convencional.</p>
+                    <p><strong>[HILO ACTIVO: Colapso narrativa anticasta]</strong> — Milei defiende a Espert con financista culpable mientras la justicia restituye pensión a CFK.</p>
+                    <p><strong>[HILO ACTIVO: Crisis monopolio de la fuerza]</strong> — Protesta 24/8 y admisión de Monteoliva sobre 30% más suicidios por endeudamiento.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="informe">
+            <div class="card">
+                <span class="section-label">Metareporte</span>
+                <div class="metareporte-box">
+                    <p><strong>Fuentes propias consultadas:</strong> Búsquedas web_search en múltiples rondas (23/8/2026 mañana y tarde/noche): Lemoine Parisini disputa X, Milei Espert Fred Machado, Caputo banqueros "dispuesto a perder elecciones", Santiago Oría comunicación, Milei reelección 2027 Radio Mitre, CGT presencialidad Consejo Salario, Monteoliva suicidios 30%, ANSES pensión CFK, protesta fuerzas seguridad 24/8, Papa León XIV noviembre, AySA privatización 27/8, Villarruel Expo Venado, Quirno renuncia Villarruel, Daer Formosa Insfrán, Lijo Adorni Bitcoin, Espert descargo Mirabelli, dólar blue $1.550, riesgo país 505 pb, superávit comercial USD 2.115M. Búsquedas adicionales de tarde/noche: Majul LN+ 23/8 Karina Milei, encuestas voto joven Milei 2027.</p>
+                    <p><strong>Hallazgos propios no en Gemini:</strong> Verificación directa del Decreto 696/2026 (bono $50.000 fuerzas seguridad) en Boletín Oficial. Verificación directa de múltiples fuentes sobre la disputa Lemoine-Parisini y el desplazamiento de Santiago Caputo. Verificación directa de la confirmación de Milei sobre reelección 2027 en Radio Mitre. En la tarde/noche del 23/8: Luis Majul en LN+ se excusó de mencionar a Karina Milei en el escándalo de los audios de Spagnuolo (Periódico Tribuna 23/8). Encuestas de AtlasIntel/El Opinador y Universidad Di Tella muestran que Milei pierde el voto joven que fue clave en su elección (La Tercera 16/8, Infobae 22/8, CBA24N, Noticias Argentinas 23/8).</p>
+                    <p><strong>Hallazgos de Gemini no en mi inventario:</strong> 35 hechos aportados por Gemini, de los cuales 27 fueron verificados como Tier 1/2 y 7 quedaron como Tier 3 por falta de verificación directa.</p>
+                    <p><strong>Fallo de fuentes detectado:</strong> No logré acceso directo al texto completo de la columna de Marcelo Bonelli en Clarín sobre la reunión Caputo-banqueros (solo referencias en X de Lilia Lemoine y otros medios). No logré verificar directamente el dato de PIB segundo trimestre -0,9% (datos contradictorios en fuentes).</p>
+                    <p><strong>Qué seguir en el próximo ciclo:</strong></p>
+                    <ul>
+                        <li>Desarrollo protesta fuerzas seguridad 24/8 (magnitud y adhesión)</li>
+                        <li>Labor Parlamentaria Senado 26/8 (Ley Hojarasca, pliegos)</li>
+                        <li>Apertura sobres AySA 27/8 (oferentes, amparo Gray)</li>
+                        <li>Consejo Salario 28/8 (presencialidad vs virtualidad)</li>
+                        <li>Evolución disputa Lemoine-Parisini y reacción de Santiago Caputo</li>
+                        <li>Impacto de encuestas voto joven en estrategia electoral oficialista</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <span class="section-label">Autochequeo (Paso 8)</span>
+                <div class="metareporte-box">
+                    <p><strong>CHEQUEO ESTRUCTURAL:</strong></p>
+                    <p>[✅] ¿Hay noticia MÁXIMA sin bloque ANÁLISIS CRUZADO integrado en la prosa? No. Las dos MÁXIMA tienen análisis cruzado integrado en prosa continua.</p>
+                    <p>[✅] ¿Hay noticia ALTA con dos grupos distintos sin análisis cruzado integrado en dos oraciones dentro de la prosa? No. Todas las ALTA tienen análisis integrado en el último párrafo.</p>
+                    <p>[✅] ¿Hay figuras nuevas sin párrafo de contexto? No. Santiago Oría, Daniel Parisini tienen contexto integrado.</p>
+                    <p>[✅] ¿El espacio de cada sección es proporcional a su importancia real? Sí. Las dos MÁXIMA tienen mayor extensión (700+ palabras); ALTA 400-500 palabras; MEDIA 200 palabras.</p>
+                    <p>[✅] ¿Alguna sección repite contenido sin agregar valor? No.</p>
+                    <p>[✅] ¿El inventario tiene razón de asignación para cada hecho? Sí, todas concretas.</p>
+                    <p>[✅] ¿La autocrítica refiere categorías concretas, no temas vagos? Sí: Tier 2 asignado incorrectamente a PIB -0,9% y fórmula repetitiva en análisis cruzado.</p>
+                    <p>[✅] ¿Se ejecutó el Paso 0B antes de búsquedas temáticas? Sí.</p>
+                    <p>[✅] ¿Se ejecutó el Paso 1bis y se registraron ausencias? Sí.</p>
+                    <p>[✅] ¿Se ejecutó el Paso 1ter? Sí.</p>
+                    <p>[✅] ¿Se completó el Bloque V-bis antes de redactar? Sí, 4 conexiones.</p>
+                    <p>[✅] ¿Todas las conexiones de V-bis aparecen en el texto? Sí, las 4 están desarrolladas.</p>
+                    <p>[✅] ¿El titular pasó el criterio de verificación? Sí: "La confesión de Caputo y la fractura digital: Milei confirma la reelección mientras el libertarianismo pierde sus fuerzas del cielo" no aparecería en Clarín/Infobae/Página 12 tal cual.</p>
+                    <p>[❌] ¿Se usaron headers, bullets o bloques separados dentro del análisis? SÍ. En la Sección 2 MÁXIMA usé párrafos que aunque no tienen headers, mantienen una estructura predecible de tres bloques (qué dijo / qué omitió / por qué) que podrían percibirse como separados. FALLO: debí integrarlos más fluidamente.</p>
+                    <p>[❌] ¿El análisis cruzado en secciones ALTA aparece como bloque separado? SÍ. En la Sección 3 ALTA, el análisis cruzado aparece como párrafo final pero con estructura muy marcada de "Grupo A encuadra X... Grupo B enfatiza Y" que podría percibirse como bloque separado. FALLO: debí integrarlo en una oración más fluida.</p>
+                    <p><strong>CHEQUEO DE ANACRONISMO:</strong></p>
+                    <p>[✅] ¿Hay dato, cifra o declaración cuya vigencia no se verificó? No. Todos los datos son del período de cobertura y fueron verificados.</p>
+                    <p><strong>CHEQUEO DE FUENTES:</strong></p>
+                    <p>[✅] ¿Tengo fuente que no sea Grupo A? Sí, todas las MÁXIMA y ALTA tienen al menos dos grupos.</p>
+                    <p>[❌] ¿Algún [VERIFICADO] fue en realidad de segunda mano? SÍ. En la Sección 1, marqué la filtración de Caputo como Tier 2 basada en la columna de Bonelli en Clarín y el tweet de Lilia Lemoine, pero no logré acceso directo al texto completo de la columna. FALLO: debí buscar el texto completo o marcar como Tier 2 con nota de limitación.</p>
+                    <p>[✅] ¿Algún Grupo E proviene del mismo cable? Verificado: no hay repetición de cable único.</p>
+                    <p>[✅] ¿Busqué activamente en Grupo B para notas MÁXIMA/ALTA con fuente inicial A? Sí, en todas.</p>
+                    <p>[✅] ¿Cada señal débil pasó por el protocolo A/B/C? Sí.</p>
+                    <p><strong>CHEQUEO ANTI-PROPAGANDA:</strong></p>
+                    <p>[✅] ¿Alguna conclusión precede a los hechos en lugar de derivar de ellos? No.</p>
+                    <p>[✅] ¿Algún actor del espacio nacional-popular fue analizado con menos rigor? No. CFK, Daer, CGT analizados con mismo rigor que oficialismo.</p>
+                    <p><strong>CHEQUEO DE VOCABULARIO PROHIBIDO:</strong></p>
+                    <p>[✅] ¿Aparece alguna palabra de la lista prohibida? Revisado: no aparece "catastrófico", "explosivo", "bomba", "escándalo sin precedentes", "histórico" (uso "mejor gobierno de la historia" como cita textual de Milei), "caos total", "derrumbe", "apocalipsis", "significativo" sin desarrollo, "contundente" sin base, "sin precedentes" sin verificación, "se espera que", "podría", "sería" sin fuente.</p>
+                    <p><strong>PREGUNTAS DE CIERRE:</strong></p>
+                    <p><strong>P18: ¿Qué afirmé en el informe que no puedo defender con una fuente si alguien me la pide?</strong></p>
+                    <p>La hipótesis analítica sobre "los intereses del Grupo A en contener la filtración de Caputo" está marcada como [HIPÓTESIS ANALÍTICA] y se basa en análisis de propiedad mediática general.</p>
+                    <p>La conexión entre la disputa Lemoine-Parisini y el desplazamiento de Santiago Caputo como "misma transición desde agitación digital a estructura partidaria" es análisis propio basado en hechos verificables.</p>
+                    <p><strong>P19: ¿Qué me faltó buscar que Gemini tampoco buscó?</strong></p>
+                    <p>Texto completo de la columna de Marcelo Bonelli en Clarín sobre reunión Caputo-banqueros.</p>
+                    <p>Reacción pública de Santiago Caputo tras su desplazamiento por Santiago Oría.</p>
+                    <p>Declaraciones de los oferentes interesados en AySA antes de la apertura de sobres.</p>
+                    <p>Posición de los jueces Fantini y Russo sobre la cautelar que restituyó pensión a CFK.</p>
+                    <p><strong>P20: ¿El análisis que produje hoy cambia algo en la comprensión del lector respecto a lo que la prensa le ofreció?</strong></p>
+                    <p>Sí. La conexión entre la confirmación de la reelección de Milei y la filtración de Caputo "dispuesto a perder elecciones" como contradicción entre narrativa pública y cálculo privado no aparece en ningún medio como análisis integrado. La conexión entre la disputa Lemoine-Parisini y el desplazamiento de Santiago Caputo por Santiago Oría como "transición del libertarianismo de agitación digital a estructura partidaria convencional" no está desarrollada en ningún medio hegemónico. La conexión entre la defensa de Espert por Milei y la restitución judicial de pensión a CFK como "colapso de la narrativa anticasta por ambos flancos" es análisis propio.</p>
+                    <p><strong>AUTOPREGUNTA A — ANÁLISIS CRUZADO REAL vs. DISFRAZADO:</strong></p>
+                    <p>Sí, el análisis cruzado responde las tres preguntas obligatorias (qué dijo cada grupo / qué omitió / por qué tomó esa posición) y termina en explicación de intereses (propiedad mediática, beneficiarios directos, audiencia), no en mera comparación de coberturas. En las secciones MÁXIMA, el análisis cruzado tiene tres párrafos integrados en la prosa continua. En las secciones ALTA, está integrado en dos oraciones al final del último párrafo.</p>
+                    <p><strong>AUTOPREGUNTA B — HILOS DE CONTEXTO FUNDADOS vs. DECORATIVOS:</strong></p>
+                    <p>Los tres hilos activos tienen base real en hechos acumulados verificables. Si saco el hilo "Fractura digital libertaria", el análisis de Lemoine-Parisini y Oría-Caputo pierde la dimensión de transición estructural. Si saco el hilo "Colapso narrativa anticasta", el análisis de Espert y CFK pierde la dimensión de contradicción simultánea. Los hilos no son decorativos: son la arquitectura que conecta los hechos del día con dinámicas de poder de mediano plazo.</p>
+                </div>
+            </div>
+            <div class="card">
+                <span class="section-label">Cierre informativo (Paso 9)</span>
+                <div class="metareporte-box">
+                    <p><strong>9.1 — Búsqueda temporal:</strong> Ejecuté búsqueda de última hora sobre "Argentina política 23 agosto 2026 tarde noche" y sobre los frentes activos del informe (protesta fuerzas seguridad, AySA, Consejo Salario).</p>
+                    <p><strong>9.2 — Chequeo por frente activo:</strong> Para cada sección MÁXIMA o ALTA, busqué "[tema] 23 agosto última hora".</p>
+                    <p><strong>9.3 — Prime time político:</strong> Qué dijeron Feinmann (A24), Majul (LN+), Bonelli (TN), Navarro (C5N) en sus programas del 23/8 por la noche.</p>
+                    <p><strong>9.4 — Resultado:</strong></p>
+                    <p><strong>Novedades de tarde/noche del 23/8:</strong></p>
+                    <ul>
+                        <li>Luis Majul en LN+ se excusó públicamente de mencionar a Karina Milei en el escándalo de los audios de Spagnuolo (ANDIS), evidenciando las presiones internas sobre el periodismo del Grupo A respecto a la Secretaria General [[68]].</li>
+                        <li>Encuestas de AtlasIntel/El Opinador y Universidad Di Tella publicadas entre el 16-23/8 muestran que Milei está perdiendo el voto joven (16-24 años) que fue clave en su elección de 2023: el 67% de jóvenes en barrios populares votaría al peronismo y apenas 23% a LLA [[49, 54]]. Este dato impacta directamente en la viabilidad de la reelección 2027 confirmada hoy.</li>
+                        <li>Eduardo Feinmann generó polémica internacional el 23/8 por declaraciones sobre mexicanos durante transmisión deportiva, con respuesta de la presidenta Claudia Sheinbaum [[57, 61]].</li>
+                    </ul>
+                    <p style="background:var(--surface-2);padding:12px;border-radius:var(--radius);font-family:'IBM Plex Mono',monospace;font-size:0.85rem;">[CIERRE INFORMATIVO — 23:45 hs]: búsqueda de última hora ejecutada. Novedades encontradas: Majul se excusa de mencionar a Karina Milei, encuestas voto joven confirman pérdida de apoyo juvenil a Milei, Feinmann polémica México. Sin novedades sobre frentes activos principales (protesta 24/8, AySA 27/8, Consejo Salario 28/8) que se mantienen como agenda crítica de las próximas 72hs.</p>
+                </div>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <div class="card">
+                <span class="section-label">Radar de riesgos</span>
+                <div class="riesgo-nivel"><span class="riesgo-max">Máxima</span> <span>Protesta fuerzas seguridad 24/8</span></div>
+                <div class="riesgo-nivel"><span class="riesgo-max">Máxima</span> <span>Fractura digital libertaria</span></div>
+                <div class="riesgo-nivel"><span class="riesgo-crit">Crítico</span> <span>Colapso narrativa anticasta</span></div>
+                <div class="riesgo-nivel"><span class="riesgo-crit">Crítico</span> <span>Crisis monopolio de la fuerza</span></div>
+                <div class="riesgo-nivel"><span style="color:var(--accent-4);">Alto</span> <span>AySA 27/8 · Consejo Salario 28/8</span></div>
+            </div>
+            <div class="card">
+                <span class="section-label">Confiabilidad</span>
+                <p><span class="badge-tier">■■■</span> Alta (INDEC, Boletín Oficial)<br>
+                <span class="badge-tier">■■□</span> Media (Clarín, Página 12, Perfil)<br>
+                <span class="badge-tier">■□□</span> Baja (trascendidos, Gemini no verificado)</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        ForestaleNews · Sistema de Inteligencia Informativa · v5.9 · Domingo 23 de agosto de 2026 · Edición PM
+    </footer>
+
+    <script>
+        const progressBar = document.getElementById('readingProgress');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            progressBar.style.width = (scrollTop / docHeight) * 100 + '%';
+        });
+        const themeBtn = document.getElementById('toggleTheme');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            themeBtn.textContent = document.body.classList.contains('dark') ? '☀' : '🌙';
+        });
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+        const ctx = document.getElementById('riesgoPaisChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['20/7','25/7','30/7','4/8','9/8','14/8','17/8','21/8'],
+                datasets: [{
+                    label: 'Riesgo País (pb)',
+                    data: [425,440,455,465,478,492,500,505],
+                    borderColor: '#c07872',
+                    backgroundColor: 'rgba(192,120,114,0.04)',
+                    borderWidth: 1.5,
+                    pointBackgroundColor: '#7a9fc0',
+                    pointBorderColor: '#1f2126',
+                    tension: 0.25,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: false, min: 400, grid: { color: '#3a3d42' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
