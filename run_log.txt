@@ -81,3 +81,6 @@
 [2026-09-08 11:03:23] WRAPPER - termino - exit code claude: 0, tamano del log: 0 bytes
 [2026-09-09 09:42:20] WRAPPER - arranca (prompt: 13320 caracteres, log: last_run_2026-09-09_0942.log)
 [2026-09-09 09:43] ERROR en Paso 0 — sesión de Gemini sigue deslogueada (muestra "Iniciar sesión" en vez de Lautaro Forestale), confirmado tras espera+reload+espera. Bloqueo persiste desde el 31/8 (décimo día calendario). Corrida AM del 9/9 no continúa; requiere que Lautaro re-loguee el perfil de Chrome en gemini.google.com.
+[2026-09-09 09:43:47] WRAPPER - termino - exit code claude: 0, tamano del log: 0 bytes
+[2026-09-09 10:00:02] WRAPPER - arranca (prompt: 13320 caracteres, log: last_run_2026-09-09_1000.log)
+[2026-09-09 10:01] ERROR en Paso 0 — corrida AM del 9/9 (segundo intento del día, 10:00), sesión de Gemini (Lautaro Forestale) sigue deslogueada — "Iniciar sesión" visible tras reload+espera x2, sin falsos negativos. Mismo bloqueo ya confirmado hoy a las 09:43 y persistente desde el 31/8 (décimo día calendario, corrida repetida el mismo día no cambia nada). No se tocó Qwen, DeepSeek, ediciones/2026-09-09-AM.html ni index.html. Sigue pendiente que Lautaro re-loguee manualmente el perfil de Chrome de Playwright MCP en gemini.google.com — es la única acción que puede destrabar esto.
