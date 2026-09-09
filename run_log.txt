@@ -78,3 +78,6 @@
 [2026-09-07 20:01:38] WRAPPER - termino - exit code claude: 0, tamano del log: 0 bytes
 [2026-09-08 11:01:49] WRAPPER - arranca (prompt: 13320 caracteres, log: last_run_2026-09-08_1101.log)
 [2026-09-08 11:03] ERROR en Paso 0 — sesión de Gemini sigue deslogueada (bloqueo persiste desde el 31/8, corrida AM del 8/9, noveno día consecutivo)
+[2026-09-08 11:03:23] WRAPPER - termino - exit code claude: 0, tamano del log: 0 bytes
+[2026-09-09 09:42:20] WRAPPER - arranca (prompt: 13320 caracteres, log: last_run_2026-09-09_0942.log)
+[2026-09-09 09:43] ERROR en Paso 0 — sesión de Gemini sigue deslogueada (muestra "Iniciar sesión" en vez de Lautaro Forestale), confirmado tras espera+reload+espera. Bloqueo persiste desde el 31/8 (décimo día calendario). Corrida AM del 9/9 no continúa; requiere que Lautaro re-loguee el perfil de Chrome en gemini.google.com.
