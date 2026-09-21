@@ -126,3 +126,6 @@
 [2026-09-19 20:00:50] WRAPPER - termino - exit code claude: 0, tamano del log: 0 bytes
 [2026-09-21 10:56:15] WRAPPER - arranca (prompt: 13320 caracteres, log: last_run_2026-09-21_1056.log)
 [2026-09-21 10:58] ERROR en Paso 0 — sesión de Gemini sigue deslogueada (corrida AM del 21/9, confirmado tras reload + espera de 5s: botones "Iniciar sesión", bloqueo persiste desde el 31/8, día 22). Necesita que Lautaro re-loguee el perfil de Chrome.
+[2026-09-21 10:57:17] WRAPPER - termino - exit code claude: 0, tamano del log: 0 bytes
+[2026-09-21 20:00:01] WRAPPER - arranca (prompt: 13320 caracteres, log: last_run_2026-09-21_2000.log)
+[2026-09-21 20:02] ERROR en Paso 0 — sesión de Gemini sigue deslogueada (corrida PM del 21/9, confirmado tras reload + espera de 5s: botón "Iniciar sesión", bloqueo persiste desde el 31/8, día 22). Necesita que Lautaro re-loguee el perfil de Chrome.
