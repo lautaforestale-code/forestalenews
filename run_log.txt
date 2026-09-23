@@ -133,3 +133,6 @@
 [2026-09-22 14:55:00] WRAPPER - arranca (prompt: 13320 caracteres, log: last_run_2026-09-22_1454.log)
 [2026-09-22 20:00:01] WRAPPER - arranca (prompt: 13320 caracteres, log: last_run_2026-09-22_2000.log)
 [2026-09-22 20:00] ERROR en Paso 0 — sesión de Gemini sigue deslogueada (corrida PM del 22/9, confirmado tras reload + espera de 5s: botón "Iniciar sesión", bloqueo persiste desde el 31/8, día 23). Necesita que Lautaro re-loguee el perfil de Chrome.
+[2026-09-22 20:01:04] WRAPPER - termino - exit code claude: 0, tamano del log: 0 bytes
+[2026-09-23 10:40:00] WRAPPER - arranca (prompt: 13320 caracteres, log: last_run_2026-09-23_1040.log)
+[2026-09-23 10:44] ERROR en Paso 0 - Corrida AM del 23/9. Sesion de Gemini sigue deslogueada: gemini.google.com/app muestra boton "Iniciar sesion" en vez de la cuenta guardada de Lautaro Forestale, confirmado tras reload + espera de 5s (no fue falso negativo transitorio). Bloqueo persiste desde el 31/8 (dia 24 consecutivo). Por instruccion explicita del Paso 0, no se intento loguear de cero; no se toco Qwen ni DeepSeek, no se genero ninguna edicion. Accion requerida de Lautaro: volver a loguearse manualmente en Gemini (gemini.google.com) en el perfil de Chrome que usa Playwright.
